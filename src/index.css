@@ -1,0 +1,157 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --color-obsidian: #0a0e17;
+  --color-surface: #111827;
+  --color-surface-light: #1a2332;
+  --color-electric: #3b82f6;
+  --color-electric-light: #60a5fa;
+  --color-neon: #10b981;
+  --color-steel: #64748b;
+  --color-silver: #e2e8f0;
+  --color-white: #f8fafc;
+  --color-crimson: #ef4444;
+  --color-gold: #f59e0b;
+  --font-display: "Inter", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #0a0e17;
+  font-family: "Inter", sans-serif;
+  color: #e2e8f0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.3);
+  border-radius: 2px;
+}
+
+/* Subtle scanline overlay - very light */
+@keyframes scanline {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 200px; }
+}
+
+.hud-scanlines {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(59, 130, 246, 0.008) 3px,
+    rgba(59, 130, 246, 0.008) 4px
+  );
+  animation: scanline 8s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes pulse-ring {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.4); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.cursor-blink {
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes shimmer {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+/* Logo entrance animation */
+@keyframes logo-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+    filter: grayscale(1) brightness(2.2) contrast(1.4) blur(4px);
+  }
+  60% {
+    opacity: 1;
+    filter: grayscale(1) brightness(2.2) contrast(1.4) blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: grayscale(1) brightness(2.2) contrast(1.4) blur(0px);
+  }
+}
+
+@keyframes tagline-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Logo shimmer sweep */
+@keyframes shimmer-sweep {
+  0% { transform: scale(2.8) translateX(-100%); }
+  100% { transform: scale(2.8) translateX(100%); }
+}
+
+.logo-shimmer {
+  animation: logo-reveal 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.logo-shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.15),
+    transparent
+  );
+  animation: shimmer-sweep 2s ease-in-out 1.4s 1;
+  pointer-events: none;
+}
+
+/* Smooth transitions for interactive elements */
+button, a {
+  transition: all 0.2s ease;
+}
+
+/* Focus styles for accessibility */
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Input placeholders */
+input::placeholder, textarea::placeholder {
+  color: rgba(100, 116, 139, 0.6);
+}

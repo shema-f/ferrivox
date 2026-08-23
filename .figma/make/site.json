@@ -1,0 +1,10 @@
+{
+  "description": "Explore a futuristic 3D environment showcasing Ferrivox's services in data, software, cybersecurity, and AI, enhancing user engagement and understanding.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
