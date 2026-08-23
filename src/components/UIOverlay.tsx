@@ -547,7 +547,7 @@ export default function UIOverlay({ sceneId, onNavigate }: UIOverlayProps) {
         )}
       </div>
 
-      {/* ── FOOTER ───────────────────────────────────── */}
+      {/* ── FOOTER (compact single bar) ──────────── */}
       <footer
         className="relative pointer-events-auto z-50"
         style={{
@@ -556,69 +556,42 @@ export default function UIOverlay({ sceneId, onNavigate }: UIOverlayProps) {
           backdropFilter: "blur(12px)",
         }}
       >
-        <div className="max-w-7xl mx-auto px-6 md:px-10 py-6">
-          {/* Top row: Logo, Social, Newsletter */}
-          <div className="flex flex-col md:flex-row items-start justify-between gap-6 mb-5">
-            {/* Left: Logo + Copyright */}
-            <div className="flex flex-col gap-2">
-              <FeriivoxLogo
-                style={{
-                  height: "24px",
-                  width: "auto",
-                  opacity: 0.6,
-                }}
-              />
-              <span className="text-xs text-slate-600">
-                © {new Date().getFullYear()} Ferrivox. All rights reserved.
-              </span>
-            </div>
+        <div className="max-w-7xl mx-auto px-6 md:px-10 flex items-center justify-between" style={{ height: "48px" }}>
+          {/* Left: Copyright */}
+          <span className="text-xs text-slate-600">
+            &copy; {new Date().getFullYear()} Ferrivox. All rights reserved.
+          </span>
 
-            {/* Right: Social Media Icons */}
-            <div className="flex items-center gap-3">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.name}
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200"
-                  style={{
-                    background: "rgba(100, 116, 139, 0.15)",
-                    color: "rgba(148, 163, 184, 0.7)",
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.background = "rgba(59, 130, 246, 0.25)";
-                    (e.currentTarget as HTMLElement).style.color = "#60a5fa";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLElement).style.background = "rgba(100, 116, 139, 0.15)";
-                    (e.currentTarget as HTMLElement).style.color = "rgba(148, 163, 184, 0.7)";
-                  }}
-                  title={social.name}
-                >
-                  <social.icon className="w-4 h-4" />
-                </a>
-              ))}
-            </div>
+          {/* Center: Social + Links */}
+          <div className="hidden md:flex items-center gap-4">
+            {socialLinks.map((social) => (
+              <a
+                key={social.name}
+                href={social.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-all duration-200"
+                style={{ color: "rgba(148, 163, 184, 0.5)" }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "#60a5fa"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "rgba(148, 163, 184, 0.5)"; }}
+                title={social.name}
+              >
+                <social.icon className="w-3.5 h-3.5" />
+              </a>
+            ))}
+            <span className="text-slate-700">|</span>
+            <button onClick={() => onNavigate("globe")} className="text-xs text-slate-500 hover:text-slate-300 transition-colors">About</button>
+            <button onClick={() => onNavigate("lobby")} className="text-xs text-slate-500 hover:text-slate-300 transition-colors">Products</button>
+            <button onClick={() => onNavigate("contact")} className="text-xs text-slate-500 hover:text-slate-300 transition-colors">Contact</button>
+            <span className="text-slate-700">|</span>
+            <button onClick={() => setShowPrivacy(true)} className="text-xs text-slate-500 hover:text-slate-300 transition-colors">Privacy</button>
+            <button onClick={() => setShowTerms(true)} className="text-xs text-slate-500 hover:text-slate-300 transition-colors">Terms</button>
           </div>
 
-          {/* Bottom row: Links */}
-          <div
-            className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4"
-            style={{ borderTop: "1px solid rgba(255, 255, 255, 0.04)" }}
-          >
-            <div className="text-xs text-slate-600">
-              Ferrivox Technology
-            </div>
-            <div className="flex items-center gap-5 text-xs text-slate-500">
-              <button onClick={() => onNavigate("globe")} className="hover:text-slate-300 transition-colors">About</button>
-              <button onClick={() => onNavigate("lobby")} className="hover:text-slate-300 transition-colors">Products</button>
-              <button onClick={() => onNavigate("contact")} className="hover:text-slate-300 transition-colors">Contact</button>
-              <span className="text-slate-700">|</span>
-              <button onClick={() => setShowPrivacy(true)} className="hover:text-slate-300 transition-colors">Privacy</button>
-              <button onClick={() => setShowTerms(true)} className="hover:text-slate-300 transition-colors">Terms</button>
-            </div>
-          </div>
+          {/* Right: Tagline */}
+          <span className="text-xs text-slate-600 hidden md:block">
+            IRON WILL, INFINITE DREAMS
+          </span>
         </div>
       </footer>
 

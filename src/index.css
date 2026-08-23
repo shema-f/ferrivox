@@ -84,21 +84,15 @@ body,
   100% { opacity: 0.5; }
 }
 
-/* Logo entrance animation */
+/* Logo entrance animation — fully visible, no blur/grayscale */
 @keyframes logo-reveal {
   0% {
     opacity: 0;
     transform: translateY(8px) scale(0.97);
-    filter: grayscale(1) brightness(2.2) contrast(1.4) blur(4px);
-  }
-  60% {
-    opacity: 1;
-    filter: grayscale(1) brightness(2.2) contrast(1.4) blur(0px);
   }
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
-    filter: grayscale(1) brightness(2.2) contrast(1.4) blur(0px);
   }
 }
 
