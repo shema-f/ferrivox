@@ -1,6 +1,14 @@
-// Supabase configuration
-// Replace these with your actual Supabase project URL and anon key
-// Get them from: https://supabase.com/dashboard → Project Settings → API
+import { createClient } from "@supabase/supabase-js";
 
-export const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "";
-export const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
+// Supabase configuration
+// Get these from: https://supabase.com/dashboard -> Project Settings -> API
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
+
+// Create Supabase client for frontend use
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+// Helper to check if Supabase is configured
+export const isSupabaseConfigured = () => {
+  return Boolean(supabaseUrl && supabaseAnonKey);
+};

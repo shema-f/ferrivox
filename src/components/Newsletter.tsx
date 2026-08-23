@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { createClient } from "@supabase/supabase-js";
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from "../lib/supabase";
+import { supabase, isSupabaseConfigured } from "../lib/supabase";
 
 export default function Newsletter() {
   const [email, setEmail] = useState("");
@@ -9,16 +8,21 @@ export default function Newsletter() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    if (!email) {
       setStatus("error");
       setMessage("Please enter a valid email.");
+      return;
+    }
+
+    if (!isSupabaseConfigured()) {
+      setStatus("error");
+      setMessage("Backend not configured. Add Supabase credentials to .env");
       return;
     }
 
     setStatus("loading");
 
     try {
-      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       const { error } = await supabase
         .from("subscribers")
         .insert([{ email, subscribed_at: new Date().toISOString() }]);
@@ -93,7 +97,7 @@ export default function Newsletter() {
           {message}
         </div>
       )}
-      {!SUPABASE_URL && (
+      {!isSupabaseConfigured() && (
         <div className="text-xs text-amber-500/70">
           Backend not configured yet. See setup instructions below.
         </div>

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { createClient } from "@supabase/supabase-js";
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from "../lib/supabase";
+import { supabase, isSupabaseConfigured } from "../lib/supabase";
 
 interface Subscriber {
   id: string;
@@ -21,13 +20,12 @@ export default function AdminPage() {
   const [stats, setStats] = useState({ total: 0, confirmed: 0, thisWeek: 0 });
 
   const fetchSubscribers = async () => {
-    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    if (!isSupabaseConfigured()) {
       setError("Supabase not configured. Add your credentials to .env");
       return;
     }
     setLoading(true);
     try {
-      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       const { data, error: fetchError } = await supabase
         .from("subscribers")
         .select("*")
@@ -66,9 +64,8 @@ export default function AdminPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return;
+    if (!isSupabaseConfigured()) return;
     try {
-      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       const { error } = await supabase.from("subscribers").delete().eq("id", id);
       if (!error) {
         setSubscribers((prev) => prev.filter((s) => s.id !== id));
@@ -95,7 +92,7 @@ export default function AdminPage() {
     a.click();
   };
 
-  // ── Login Screen ──
+  // Login Screen
   if (!authenticated) {
     return (
       <div
@@ -140,7 +137,7 @@ export default function AdminPage() {
     );
   }
 
-  // ── Admin Dashboard ──
+  // Admin Dashboard
   return (
     <div
       className="min-h-screen p-6 md:p-10"
