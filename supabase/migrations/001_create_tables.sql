@@ -1,5 +1,5 @@
 -- Ferrivox Newsletter Database Setup
--- Run this in Supabase SQL Editor: https://supabase.com/dashboard → SQL Editor
+-- Run this in Supabase SQL Editor: https://supabase.com/dashboard -> SQL Editor
 
 -- 1. Create subscribers table
 CREATE TABLE IF NOT EXISTS subscribers (
@@ -68,3 +68,32 @@ ALTER TABLE email_logs ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Allow service role full access" ON email_logs
   FOR ALL
   USING (true);
+
+-- 12. FERRI AI chatbot conversation logs
+CREATE TABLE IF NOT EXISTS chat_logs (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  session_id TEXT NOT NULL,
+  role TEXT NOT NULL CHECK (role IN ('user', 'bot')),
+  message TEXT NOT NULL,
+  confidence TEXT,
+  topic TEXT,
+  lead_data JSONB,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- 13. Enable RLS for chat logs
+ALTER TABLE chat_logs ENABLE ROW LEVEL SECURITY;
+
+-- 14. Allow anonymous inserts for chat logs
+CREATE POLICY "Allow anonymous chat inserts" ON chat_logs
+  FOR INSERT
+  WITH CHECK (true);
+
+-- 15. Allow authenticated reads for chat logs
+CREATE POLICY "Allow authenticated chat reads" ON chat_logs
+  FOR SELECT
+  USING (true);
+
+-- 16. Index for session lookups
+CREATE INDEX IF NOT EXISTS idx_chat_logs_session ON chat_logs(session_id);
+CREATE INDEX IF NOT EXISTS idx_chat_logs_created ON chat_logs(created_at DESC);

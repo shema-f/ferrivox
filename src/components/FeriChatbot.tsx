@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { supabase, isSupabaseConfigured } from "../lib/supabase";
 
 interface Message {
   role: "bot" | "user";
@@ -300,8 +301,23 @@ export default function FeriChatbot({ onClose }: FeriChatbotProps) {
     inputRef.current?.focus();
   }, []);
 
-  const addBotMessage = (text: string) => {
+  const sessionId = useRef(crypto.randomUUID());
+
+  const logMessage = (role: "user" | "bot", message: string, confidence?: string, topic?: string) => {
+    if (!isSupabaseConfigured()) return;
+    supabase.from("chat_logs").insert([{
+      session_id: sessionId.current,
+      role,
+      message,
+      confidence: confidence || null,
+      topic: topic || null,
+      created_at: new Date().toISOString(),
+    }]);
+  };
+
+  const addBotMessage = (text: string, confidence?: string, topic?: string) => {
     setMessages((prev) => [...prev, { role: "bot", text, timestamp: Date.now() }]);
+    logMessage("bot", text, confidence, topic);
   };
 
   const handleSend = () => {
@@ -309,6 +325,7 @@ export default function FeriChatbot({ onClose }: FeriChatbotProps) {
     if (!text) return;
 
     setMessages((prev) => [...prev, { role: "user", text, timestamp: Date.now() }]);
+    logMessage("user", text);
     setInput("");
 
     // Lead qualification flow
@@ -325,27 +342,38 @@ export default function FeriChatbot({ onClose }: FeriChatbotProps) {
         setQualStep(nextStep);
         setTimeout(() => addBotMessage(QUAL_QUESTIONS[nextStep].question), 300);
       } else {
-        setQualStep("complete");
-        setTimeout(() => {
-          addBotMessage("I have enough information to prepare a project brief. Here's what I've captured:");
-          setTimeout(() => {
-            addBotMessage(
-              `PROJECT BRIEF\n` +
-              `━━━━━━━━━━━━━━━\n` +
-              `Project: ${lead.projectType || text}\n` +
-              `Problem: ${lead.problem}\n` +
-              `Users: ${lead.users}\n` +
-              `Features: ${lead.features}\n` +
-              `Integrations: ${lead.integrations}\n` +
-              `Timeline: ${lead.timeline}\n` +
-              `Budget: ${lead.budget}\n` +
-              `Contact: ${lead.name} (${lead.email}) - ${lead.company}\n` +
-              `━━━━━━━━━━━━━━━\n\n` +
-              `I'll prepare this for the Ferrivox team. Would you like to submit this inquiry?`
-            );
-            setShowHandoff(true);
-          }, 500);
-        }, 400);
+        setQualStep("complete");          setTimeout(() => {
+            addBotMessage("I have enough information to prepare a project brief. Here's what I've captured:");
+            setTimeout(() => {
+              const brief =
+                `PROJECT BRIEF\n` +
+                `━━━━━━━━━━━━━━━\n` +
+                `Project: ${lead.projectType || text}\n` +
+                `Problem: ${lead.problem}\n` +
+                `Users: ${lead.users}\n` +
+                `Features: ${lead.features}\n` +
+                `Integrations: ${lead.integrations}\n` +
+                `Timeline: ${lead.timeline}\n` +
+                `Budget: ${lead.budget}\n` +
+                `Contact: ${lead.name} (${lead.email}) - ${lead.company}\n` +
+                `━━━━━━━━━━━━━━━\n\n` +
+                `I'll prepare this for the Ferrivox team. Would you like to submit this inquiry?`;
+              addBotMessage(brief);
+              // Log lead data
+              if (isSupabaseConfigured()) {
+                supabase.from("chat_logs").insert([{
+                  session_id: sessionId.current,
+                  role: "bot",
+                  message: "PROJECT BRIEF SUBMITTED",
+                  confidence: "high",
+                  topic: "lead_qualification",
+                  lead_data: lead,
+                  created_at: new Date().toISOString(),
+                }]);
+              }
+              setShowHandoff(true);
+            }, 500);
+          }, 400);
       }
       return;
     }

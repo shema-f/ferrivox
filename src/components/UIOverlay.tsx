@@ -6,6 +6,7 @@ import TermsOfService from "./TermsOfService";
 import PrivacyPolicy from "./PrivacyPolicy";
 import FeriChatbot from "./FeriChatbot";
 import Newsletter from "./Newsletter";
+import { supabase, isSupabaseConfigured } from "../lib/supabase";
 
 const SERVICES: Array<{ id: SceneId; label: string; description: string; icon: string }> = [
   { id: "data",     label: "Data & Analytics",    description: "Turn data into decisions",            icon: "📊" },
@@ -88,6 +89,7 @@ function ContactForm({ onSubmit }: { onSubmit: () => void }) {
     message: "",
   });
   const [step, setStep] = useState<"type" | "details" | "done">("type");
+  const [submitting, setSubmitting] = useState(false);
 
   const PROJECT_TYPES = [
     "Software", "AI / ML", "Data", "Cybersecurity", "Infrastructure", "Other",
@@ -171,13 +173,30 @@ function ContactForm({ onSubmit }: { onSubmit: () => void }) {
         </div>
       ))}
       <button
-        onClick={() => { if (form.email && form.company) { setStep("done"); setTimeout(onSubmit, 3000); } }}
+        onClick={async () => {
+          if (form.email && form.company && !submitting) {
+            setSubmitting(true);
+            if (isSupabaseConfigured()) {
+              await supabase.from("contact_submissions").insert([{
+                type: form.type,
+                company: form.company,
+                email: form.email,
+                message: form.message,
+                submitted_at: new Date().toISOString(),
+              }]);
+            }
+            setSubmitting(false);
+            setStep("done");
+            onSubmit();
+          }
+        }}
+        disabled={submitting}
         className="mt-1 px-6 py-3 text-sm font-semibold rounded-lg transition-all duration-200"
-        style={{ color: "#ffffff", background: "#3b82f6" }}
-        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#2563eb"; }}
-        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "#3b82f6"; }}
+        style={{ color: "#ffffff", background: submitting ? "rgba(59, 130, 246, 0.5)" : "#3b82f6" }}
+        onMouseEnter={(e) => { if (!submitting) (e.currentTarget as HTMLElement).style.background = "#2563eb"; }}
+        onMouseLeave={(e) => { if (!submitting) (e.currentTarget as HTMLElement).style.background = "#3b82f6"; }}
       >
-        Send Message
+        {submitting ? "Sending..." : "Send Message"}
       </button>
     </div>
   );
