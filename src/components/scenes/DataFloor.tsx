@@ -1,36 +1,55 @@
-import { useRef, useMemo } from "react";
-import { useFrame } from "@react-three/fiber";
-import { Text } from "@react-three/drei";
-import * as THREE from "three";
-import { seededRandom } from "../../utils/random";
+import { useRef, useMemo } from "react"
+
+import { useFrame } from "@react-three/fiber"
+
+import { Text } from "@react-three/drei"
+
+import * as THREE from "three"
+
+import { seededRandom } from "../../utils/random"
 
 function DataParticleStream() {
-  const count = 2200;
+  const count = 2200
+
   const { geom, speeds, offsets } = useMemo(() => {
-    const rng = seededRandom(8888);
-    const positions = new Float32Array(count * 3);
-    const speeds = new Float32Array(count);
-    const offsets = new Float32Array(count);
+    const rng = seededRandom(8888)
+
+    const positions = new Float32Array(count * 3)
+
+    const speeds = new Float32Array(count)
+
+    const offsets = new Float32Array(count)
+
     for (let i = 0; i < count; i++) {
-      positions[i * 3] = (rng() - 0.5) * 60 - 8;
-      positions[i * 3 + 1] = rng() * 16 + 0.5;
-      positions[i * 3 + 2] = (rng() - 0.5) * 22;
-      speeds[i] = 0.06 + rng() * 0.1;
-      offsets[i] = rng() * 60;
+      positions[i * 3] = (rng() - 0.5) * 60 - 8
+
+      positions[i * 3 + 1] = rng() * 16 + 0.5
+
+      positions[i * 3 + 2] = (rng() - 0.5) * 22
+
+      speeds[i] = 0.06 + rng() * 0.1
+
+      offsets[i] = rng() * 60
     }
-    const g = new THREE.BufferGeometry();
-    g.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-    return { geom: g, speeds, offsets };
-  }, []);
+
+    const g = new THREE.BufferGeometry()
+
+    g.setAttribute("position", new THREE.BufferAttribute(positions, 3))
+
+    return { geom: g, speeds, offsets }
+  }, [])
 
   useFrame(() => {
-    const pos = geom.attributes.position.array as Float32Array;
+    const pos = geom.attributes.position.array as Float32Array
+
     for (let i = 0; i < count; i++) {
-      pos[i * 3] += speeds[i];
-      if (pos[i * 3] > 30) pos[i * 3] = -30 - offsets[i] * 0.1;
+      pos[i * 3] += speeds[i]
+
+      if (pos[i * 3] > 30) pos[i * 3] = -30 - offsets[i] * 0.1
     }
-    geom.attributes.position.needsUpdate = true;
-  });
+
+    geom.attributes.position.needsUpdate = true
+  })
 
   return (
     <points geometry={geom}>
@@ -42,23 +61,28 @@ function DataParticleStream() {
         sizeAttenuation
       />
     </points>
-  );
+  )
 }
 
 function ProcessingMachine({ x }: { x: number }) {
-  const ringRef = useRef<THREE.Mesh>(null);
-  const beamRef = useRef<THREE.Mesh>(null);
+  const ringRef = useRef<THREE.Mesh>(null)
+
+  const beamRef = useRef<THREE.Mesh>(null)
 
   useFrame((state) => {
     if (ringRef.current) {
-      ringRef.current.rotation.y += 0.02;
-      ringRef.current.rotation.x += 0.01;
+      ringRef.current.rotation.y += 0.02
+
+      ringRef.current.rotation.x += 0.01
     }
+
     if (beamRef.current) {
-      const mat = beamRef.current.material as THREE.MeshStandardMaterial;
-      mat.emissiveIntensity = 0.8 + Math.sin(state.clock.elapsedTime * 3 + x) * 0.4;
+      const mat = beamRef.current.material as THREE.MeshStandardMaterial
+
+      mat.emissiveIntensity =
+        0.8 + Math.sin(state.clock.elapsedTime * 3 + x) * 0.4
     }
-  });
+  })
 
   return (
     <group position={[x, 5, 0]}>
@@ -107,7 +131,7 @@ function ProcessingMachine({ x }: { x: number }) {
         </mesh>
       ))}
     </group>
-  );
+  )
 }
 
 function OrganizedDataCubes() {
@@ -129,29 +153,24 @@ function OrganizedDataCubes() {
                 emissiveIntensity={0.25 + (col + row + layer) * 0.04}
               />
             </mesh>
-          ))
-        )
+          )),
+        ),
       )}
     </group>
-  );
+  )
 }
-
 
 export default function DataFloor({
   position,
 }: {
-  position: [number, number, number];
+  position: [number, number, number]
 }) {
   return (
     <group position={position}>
       {/* Floor */}
       <mesh position={[0, -0.1, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[80, 60]} />
-        <meshStandardMaterial
-          color="#030810"
-          metalness={0.6}
-          roughness={0.5}
-        />
+        <meshStandardMaterial color="#030810" metalness={0.6} roughness={0.5} />
       </mesh>
       <gridHelper args={[80, 40, "#00ffcc", "#001a15"]} position={[0, 0, 0]} />
 
@@ -178,7 +197,7 @@ export default function DataFloor({
         anchorX="center"
         letterSpacing={0.2}
       >
-        ENGINEERING
+        TRANSFORM
       </Text>
       <Text
         position={[22, 14, 0]}
@@ -261,5 +280,5 @@ export default function DataFloor({
         decay={2}
       />
     </group>
-  );
+  )
 }

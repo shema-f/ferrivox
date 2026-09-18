@@ -1,25 +1,37 @@
-import { useRef, useMemo } from "react";
-import { useFrame } from "@react-three/fiber";
-import { Text } from "@react-three/drei";
-import * as THREE from "three";
+import { useRef, useMemo } from "react"
+
+import { useFrame } from "@react-three/fiber"
+
+import { Text } from "@react-three/drei"
+
+import * as THREE from "three"
 
 function TerminalConsole() {
-  const screenRef = useRef<THREE.Mesh>(null);
-  const scanRef = useRef<THREE.Mesh>(null);
+  const screenRef = useRef<THREE.Mesh>(null)
+
+  const scanRef = useRef<THREE.Mesh>(null)
 
   useFrame((state) => {
-    if (!screenRef.current) return;
-    const mat = screenRef.current.material as THREE.MeshStandardMaterial;
-    mat.emissiveIntensity = 0.12 + Math.sin(state.clock.elapsedTime * 0.5) * 0.04;
+    if (!screenRef.current) return
+
+    const mat = screenRef.current.material as THREE.MeshStandardMaterial
+
+    mat.emissiveIntensity =
+      0.12 + Math.sin(state.clock.elapsedTime * 0.5) * 0.04
 
     if (scanRef.current) {
       // Scanline sweep
-      const y = Math.sin(state.clock.elapsedTime * 0.8) * 4.5;
-      scanRef.current.position.y = y;
-      const sm = scanRef.current.material as THREE.MeshStandardMaterial;
-      sm.opacity = 0.15 + Math.abs(Math.sin(state.clock.elapsedTime * 0.8)) * 0.1;
+
+      const y = Math.sin(state.clock.elapsedTime * 0.8) * 4.5
+
+      scanRef.current.position.y = y
+
+      const sm = scanRef.current.material as THREE.MeshStandardMaterial
+
+      sm.opacity =
+        0.15 + Math.abs(Math.sin(state.clock.elapsedTime * 0.8)) * 0.1
     }
-  });
+  })
 
   return (
     <group position={[0, 4, 0]}>
@@ -36,18 +48,17 @@ function TerminalConsole() {
       {/* Main screen frame */}
       <mesh position={[0, 2.5, 0]}>
         <boxGeometry args={[14, 10, 0.3]} />
-        <meshStandardMaterial
-          color="#030810"
-          metalness={0.9}
-          roughness={0.1}
-        />
+        <meshStandardMaterial color="#030810" metalness={0.9} roughness={0.1} />
       </mesh>
 
       {/* Screen border glow */}
       {[
         [0, 7.1, 0, 14.3, 0.12, 0.35],
+
         [0, -2.1, 0, 14.3, 0.12, 0.35],
+
         [-7.1, 2.5, 0, 0.12, 9.3, 0.35],
+
         [7.1, 2.5, 0, 0.12, 9.3, 0.35],
       ].map(([px, py, pz, sx, sy, sz], i) => (
         <mesh key={i} position={[px, py, pz]}>
@@ -130,8 +141,11 @@ function TerminalConsole() {
       {/* Category options */}
       {[
         { label: "SOFTWARE", x: -4.5 },
+
         { label: "AI / ML", x: -1.5 },
+
         { label: "DATA", x: 1.5 },
+
         { label: "SECURITY", x: 4.5 },
       ].map((opt) => (
         <group key={opt.label} position={[opt.x, 1.8, 0.25]}>
@@ -197,16 +211,19 @@ function TerminalConsole() {
         </group>
       ))}
     </group>
-  );
+  )
 }
 
 function CornerBrackets() {
   const corners: [number, number, number, number][] = [
     [-6.5, 7, 0.2, Math.PI * 0],
+
     [6.5, 7, 0.2, Math.PI * 0.5],
+
     [6.5, -2, 0.2, Math.PI],
+
     [-6.5, -2, 0.2, Math.PI * 1.5],
-  ];
+  ]
 
   return (
     <>
@@ -214,38 +231,64 @@ function CornerBrackets() {
         <group key={i} position={[x, y, z]} rotation={[0, 0, rot]}>
           <mesh position={[0.5, 0, 0]}>
             <boxGeometry args={[1, 0.1, 0.05]} />
-            <meshStandardMaterial color="#00d4ff" emissive="#00d4ff" emissiveIntensity={2} />
+            <meshStandardMaterial
+              color="#00d4ff"
+              emissive="#00d4ff"
+              emissiveIntensity={2}
+            />
           </mesh>
           <mesh position={[0, -0.5, 0]}>
             <boxGeometry args={[0.1, 1, 0.05]} />
-            <meshStandardMaterial color="#00d4ff" emissive="#00d4ff" emissiveIntensity={2} />
+            <meshStandardMaterial
+              color="#00d4ff"
+              emissive="#00d4ff"
+              emissiveIntensity={2}
+            />
           </mesh>
         </group>
       ))}
     </>
-  );
+  )
 }
 
 function CircuitFloor() {
   const lines = useMemo(() => {
     const segs: Array<[number, number, number, number]> = [
-      [-20, -4, 20, -4], [-20, -8, 20, -8], [-20, -12, 20, -12],
-      [-18, -4, -18, -15], [-10, -4, -10, -15], [0, -4, 0, -15],
-      [10, -4, 10, -15], [18, -4, 18, -15],
-      [-20, 4, -20, -4], [20, 4, 20, -4],
-    ];
-    return segs;
-  }, []);
+      [-20, -4, 20, -4],
+      [-20, -8, 20, -8],
+      [-20, -12, 20, -12],
+
+      [-18, -4, -18, -15],
+      [-10, -4, -10, -15],
+      [0, -4, 0, -15],
+
+      [10, -4, 10, -15],
+      [18, -4, 18, -15],
+
+      [-20, 4, -20, -4],
+      [20, 4, 20, -4],
+    ]
+
+    return segs
+  }, [])
 
   return (
     <>
       {lines.map(([x1, z1, x2, z2], i) => {
-        const cx = (x1 + x2) / 2;
-        const cz = (z1 + z2) / 2;
-        const w = Math.abs(x2 - x1) || 0.06;
-        const d = Math.abs(z2 - z1) || 0.06;
+        const cx = (x1 + x2) / 2
+
+        const cz = (z1 + z2) / 2
+
+        const w = Math.abs(x2 - x1) || 0.06
+
+        const d = Math.abs(z2 - z1) || 0.06
+
         return (
-          <mesh key={i} position={[cx, 0.02, cz]} rotation={[-Math.PI / 2, 0, 0]}>
+          <mesh
+            key={i}
+            position={[cx, 0.02, cz]}
+            rotation={[-Math.PI / 2, 0, 0]}
+          >
             <planeGeometry args={[w, d]} />
             <meshStandardMaterial
               color="#00d4ff"
@@ -255,32 +298,25 @@ function CircuitFloor() {
               opacity={0.25}
             />
           </mesh>
-        );
+        )
       })}
     </>
-  );
+  )
 }
 
 export default function CommandCenter({
   position,
 }: {
-  position: [number, number, number];
+  position: [number, number, number]
 }) {
   return (
     <group position={position}>
       {/* Floor */}
       <mesh position={[0, -0.1, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[80, 60]} />
-        <meshStandardMaterial
-          color="#020508"
-          metalness={0.7}
-          roughness={0.4}
-        />
+        <meshStandardMaterial color="#020508" metalness={0.7} roughness={0.4} />
       </mesh>
-      <gridHelper
-        args={[80, 40, "#001a2e", "#000d18"]}
-        position={[0, 0, 0]}
-      />
+      <gridHelper args={[80, 40, "#001a2e", "#000d18"]} position={[0, 0, 0]} />
       <CircuitFloor />
       <TerminalConsole />
 
@@ -310,5 +346,5 @@ export default function CommandCenter({
         decay={2}
       />
     </group>
-  );
+  )
 }

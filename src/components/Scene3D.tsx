@@ -1,19 +1,31 @@
-import { Suspense } from "react";
-import { Canvas } from "@react-three/fiber";
-import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
-import CameraRig from "./CameraRig";
-import HQScene from "./scenes/HQScene";
-import DataFloor from "./scenes/DataFloor";
-import SoftwareFloor from "./scenes/SoftwareFloor";
-import SecurityFloor from "./scenes/SecurityFloor";
-import AIFloor from "./scenes/AIFloor";
-import ProjectDistrict from "./scenes/ProjectDistrict";
-import GlobalNetwork from "./scenes/GlobalNetwork";
-import CommandCenter from "./scenes/CommandCenter";
-import type { SceneId } from "../types";
+import { Suspense } from "react"
+
+import { Canvas } from "@react-three/fiber"
+
+import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing"
+
+import CameraRig from "./CameraRig"
+
+import HQScene from "./scenes/HQScene"
+
+import DataFloor from "./scenes/DataFloor"
+
+import SoftwareFloor from "./scenes/SoftwareFloor"
+
+import SecurityFloor from "./scenes/SecurityFloor"
+
+import AIFloor from "./scenes/AIFloor"
+
+import ProjectDistrict from "./scenes/ProjectDistrict"
+
+import GlobalNetwork from "./scenes/GlobalNetwork"
+
+import CommandCenter from "./scenes/CommandCenter"
+
+import type { SceneId } from "../types"
 
 interface Scene3DProps {
-  sceneId: SceneId;
+  sceneId: SceneId
 }
 
 function SceneContent({ sceneId }: Scene3DProps) {
@@ -49,7 +61,7 @@ function SceneContent({ sceneId }: Scene3DProps) {
         <Vignette eskil={false} offset={0.15} darkness={0.75} />
       </EffectComposer>
     </>
-  );
+  )
 }
 
 export default function Scene3D({ sceneId }: Scene3DProps) {
@@ -58,8 +70,11 @@ export default function Scene3D({ sceneId }: Scene3DProps) {
       gl={{ antialias: true, alpha: false }}
       camera={{
         position: [0, 10, 44],
+
         fov: 58,
+
         near: 0.1,
+
         far: 2500,
       }}
       dpr={[1, 2]}
@@ -70,5 +85,5 @@ export default function Scene3D({ sceneId }: Scene3DProps) {
         <SceneContent sceneId={sceneId} />
       </Suspense>
     </Canvas>
-  );
+  )
 }
