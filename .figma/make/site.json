@@ -1,10 +1,17 @@
 {
-  "description": "Explore a futuristic 3D environment showcasing Ferrivox's services in data, software, cybersecurity, and AI, enhancing user engagement and understanding.",
+  "title": "Ferrivox — Iron Will, Infinite Dreams",
+  "description": "Ferrivox is a Rwanda-born technology company building data, AI, software, and intelligent systems. Engineered in Kigali, designed for the world.",
+  "language": "en",
   "robots": {
-    "index": false
+    "index": true
+  },
+  "icons": {
+    "icon": "/favicon.svg"
+  },
+  "openGraph": {
+    "image": "/og-cover.jpg"
   },
   "accessibility": {
-    "addBypassLinks": false,
-    "ignoreReducedMotion": false
+    "addBypassLinks": true
   }
 }

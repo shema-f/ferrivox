@@ -1,0 +1,31 @@
+# Cache policy for static hosts that support _headers (Cloudflare Pages, Netlify).
+# Order matters: the most specific matching rule wins on both platforms.
+#
+# Note on compression: do NOT set Content-Encoding here. The build writes
+# .br/.gz sidecars next to every compressible asset (see precompressAssets
+# in vite.config.ts). Netlify serves the sidecar variant automatically when
+# the client sends Accept-Encoding, and Cloudflare compresses at the edge —
+# a manual Content-Encoding header on the plain file would corrupt responses
+# for clients that don't accept that encoding.
+
+# ── Hashed assets: immutable, cache forever ──────────────────────────────
+# Vite emits content-hashed filenames (vendor-three-3isr5vuK.js), so any
+# change produces a new URL — safe to cache permanently.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# ── index.html: never cached longer than the deploy ─────────────────────
+# HTML references the hashed assets, so it must revalidate on every load
+# to pick up new deploys immediately.
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# ── Everything else at the root (robots.txt, favicon, _headers) ─────────
+/*
+  Cache-Control: public, max-age=3600
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  X-Frame-Options: DENY
+  X-XSS-Protection: 1; mode=block
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.supabase.co; frame-src 'none';

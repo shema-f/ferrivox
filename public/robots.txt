@@ -1,0 +1,27 @@
+# Ferrivox — Production robots.txt
+# https://ferrivox.com
+
+User-agent: *
+Allow: /
+
+# Disallow admin and auth routes
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /api/
+Disallow: /.figma/
+
+# Sitemap
+Sitemap: https://ferrivox.com/sitemap.xml
+
+# Crawl-delay for polite bots (optional)
+# Crawl-delay: 1
+
+# Specific bot rules
+User-agent: GPTBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: CCBot
+Disallow: /

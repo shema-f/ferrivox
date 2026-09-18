@@ -1,0 +1,18 @@
+{
+  "name": "Ferrivox — Iron Will, Infinite Dreams",
+  "short_name": "Ferrivox",
+  "description": "Rwanda-born technology company building data, AI, software, and intelligent systems.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050810",
+  "theme_color": "#050810",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["technology", "business", "education"]
+}
