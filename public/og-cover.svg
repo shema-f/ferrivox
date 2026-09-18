@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#050810"/>
+      <stop offset="50%" stop-color="#0a1628"/>
+      <stop offset="100%" stop-color="#050810"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#00d4ff"/>
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f1f5f9"/>
+      <stop offset="100%" stop-color="#94a3b8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Grid pattern -->
+  <g opacity="0.06">
+    <line x1="0" y1="0" x2="0" y2="630" stroke="#3b82f6" stroke-width="0.5"/>
+    <line x1="100" y1="0" x2="100" y2="630" stroke="#3b82f6" stroke-width="0.5"/>
+    <line x1="200" y1="0" x2="200" y2="630" stroke="#3b82f6" stroke-width="0.5"/>
+    <line x1="300" y1="0" x2="300" y2="630" stroke="#3b82f6" stroke-width="0.5"/>
+    <line x1="400" y1="0" x2="400" y2="630" stroke="#3b82f6" stroke-width="0.5"/>
+    <line x1="500" y1="0" x2="500" y2="630" stroke="#3b82f6" stroke-width="0.5"/>
+    <line x1="600" y1="0" x2="600" y2="630" stroke="#3b82f6" stroke-width="0.5"/>
+    <line x1="700" y1="0" x2="700" y2="630" stroke="#3b82f6" stroke-width="0.5"/>
+    <line x1="800" y1="0" x2="800" y2="630" stroke="#3b82f6" stroke-width="0.5"/>
+    <line x1="900" y1="0" x2="900" y2="630" stroke="#3b82f6" stroke-width="0.5"/>
+    <line x1="1000" y1="0" x2="1000" y2="630" stroke="#3b82f6" stroke-width="0.5"/>
+    <line x1="1100" y1="0" x2="1100" y2="630" stroke="#3b82f6" stroke-width="0.5"/>
+    <line x1="1200" y1="0" x2="1200" y2="630" stroke="#3b82f6" stroke-width="0.5"/>
+    <line x1="0" y1="0" x2="1200" y2="0" stroke="#3b82f6" stroke-width="0.5"/>
+    <line x1="0" y1="105" x2="1200" y2="105" stroke="#3b82f6" stroke-width="0.5"/>
+    <line x1="0" y1="210" x2="1200" y2="210" stroke="#3b82f6" stroke-width="0.5"/>
+    <line x1="0" y1="315" x2="1200" y2="315" stroke="#3b82f6" stroke-width="0.5"/>
+    <line x1="0" y1="420" x2="1200" y2="420" stroke="#3b82f6" stroke-width="0.5"/>
+    <line x1="0" y1="525" x2="1200" y2="525" stroke="#3b82f6" stroke-width="0.5"/>
+  </g>
+
+  <!-- Decorative geometric shapes -->
+  <circle cx="950" cy="200" r="180" fill="none" stroke="#3b82f6" stroke-width="0.5" opacity="0.15"/>
+  <circle cx="950" cy="200" r="120" fill="none" stroke="#00d4ff" stroke-width="0.5" opacity="0.1"/>
+  <circle cx="950" cy="200" r="60" fill="none" stroke="#3b82f6" stroke-width="0.5" opacity="0.08"/>
+
+  <!-- Top accent line -->
+  <rect x="0" y="0" width="1200" height="3" fill="url(#accent)"/>
+
+  <!-- FERRIVOX logo text -->
+  <text x="120" y="280" font-family="Arial, Helvetica, sans-serif" font-size="88" font-weight="bold" fill="url(#textGrad)" letter-spacing="8">FERRIVOX</text>
+
+  <!-- Lightning bolt accent -->
+  <path d="M 820 230 L 845 230 L 832 260 L 858 260 L 815 310 L 830 275 L 805 275 Z" fill="#3b82f6" opacity="0.8"/>
+
+  <!-- Tagline -->
+  <text x="120" y="340" font-family="Arial, Helvetica, sans-serif" font-size="32" fill="#60a5fa" letter-spacing="6" font-weight="400">IRON WILL, INFINITE DREAMS</text>
+
+  <!-- Divider line -->
+  <rect x="120" y="370" width="200" height="1" fill="url(#accent)" opacity="0.5"/>
+
+  <!-- Description -->
+  <text x="120" y="420" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#94a3b8" letter-spacing="1">
+    <tspan x="120" dy="0">Rwanda-born technology company building</tspan>
+    <tspan x="120" dy="30">data, AI, software, and intelligent systems.</tspan>
+    <tspan x="120" dy="30">Engineered in Kigali, designed for the world.</tspan>
+  </text>
+
+  <!-- Bottom bar -->
+  <rect x="0" y="590" width="1200" height="40" fill="#0a0e17" opacity="0.8"/>
+  <text x="120" y="616" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#475569" letter-spacing="2">ferrivox.com</text>
+  <text x="1080" y="616" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#475569" letter-spacing="2" text-anchor="end">KIGALI, RWANDA</text>
+</svg>
