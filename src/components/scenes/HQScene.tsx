@@ -1,36 +1,53 @@
-import { useRef, useMemo, useEffect } from "react";
-import { useFrame } from "@react-three/fiber";
-import { Text, Stars } from "@react-three/drei";
-import * as THREE from "three";
-import { seededRandom } from "../../utils/random";
+import { useRef, useMemo, useEffect } from "react"
+
+import { useFrame } from "@react-three/fiber"
+
+import { Text, Stars } from "@react-three/drei"
+
+import * as THREE from "three"
+
+import { seededRandom } from "../../utils/random"
 
 function CityBackground() {
-  const meshRef = useRef<THREE.InstancedMesh>(null);
-  const count = 260;
+  const meshRef = useRef<THREE.InstancedMesh>(null)
+
+  const count = 260
 
   useEffect(() => {
-    if (!meshRef.current) return;
-    const rng = seededRandom(54321);
-    const dummy = new THREE.Object3D();
-    let placed = 0;
+    if (!meshRef.current) return
+
+    const rng = seededRandom(54321)
+
+    const dummy = new THREE.Object3D()
+
+    let placed = 0
 
     while (placed < count) {
-      const x = (rng() - 0.5) * 380;
-      const z = (rng() - 0.5) * 380;
-      if (Math.sqrt(x * x + z * z) < 38) continue;
+      const x = (rng() - 0.5) * 380
 
-      const h = rng() * 32 + 2;
-      const w = rng() * 5 + 1.5;
-      const d = rng() * 5 + 1.5;
+      const z = (rng() - 0.5) * 380
 
-      dummy.position.set(x, h / 2 - 0.1, z);
-      dummy.scale.set(w, h, d);
-      dummy.updateMatrix();
-      meshRef.current.setMatrixAt(placed, dummy.matrix);
-      placed++;
+      if (Math.sqrt(x * x + z * z) < 38) continue
+
+      const h = rng() * 32 + 2
+
+      const w = rng() * 5 + 1.5
+
+      const d = rng() * 5 + 1.5
+
+      dummy.position.set(x, h / 2 - 0.1, z)
+
+      dummy.scale.set(w, h, d)
+
+      dummy.updateMatrix()
+
+      meshRef.current.setMatrixAt(placed, dummy.matrix)
+
+      placed++
     }
-    meshRef.current.instanceMatrix.needsUpdate = true;
-  }, []);
+
+    meshRef.current.instanceMatrix.needsUpdate = true
+  }, [])
 
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
@@ -43,28 +60,39 @@ function CityBackground() {
         emissiveIntensity={0.15}
       />
     </instancedMesh>
-  );
+  )
 }
 
 function CityWindowLights() {
-  const count = 400;
+  const count = 400
+
   const geom = useMemo(() => {
-    const rng = seededRandom(77777);
-    const positions = new Float32Array(count * 3);
+    const rng = seededRandom(77777)
+
+    const positions = new Float32Array(count * 3)
+
     for (let i = 0; i < count; i++) {
-      let x: number, z: number;
+      let x: number, z: number
+
       do {
-        x = (rng() - 0.5) * 360;
-        z = (rng() - 0.5) * 360;
-      } while (Math.sqrt(x * x + z * z) < 40);
-      positions[i * 3] = x;
-      positions[i * 3 + 1] = rng() * 30 + 1;
-      positions[i * 3 + 2] = z;
+        x = (rng() - 0.5) * 360
+
+        z = (rng() - 0.5) * 360
+      } while (Math.sqrt(x * x + z * z) < 40)
+
+      positions[i * 3] = x
+
+      positions[i * 3 + 1] = rng() * 30 + 1
+
+      positions[i * 3 + 2] = z
     }
-    const g = new THREE.BufferGeometry();
-    g.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-    return g;
-  }, []);
+
+    const g = new THREE.BufferGeometry()
+
+    g.setAttribute("position", new THREE.BufferAttribute(positions, 3))
+
+    return g
+  }, [])
 
   return (
     <points geometry={geom}>
@@ -76,34 +104,47 @@ function CityWindowLights() {
         sizeAttenuation
       />
     </points>
-  );
+  )
 }
 
 function CityParticles() {
-  const count = 5000;
+  const count = 5000
+
   const { geom, speeds } = useMemo(() => {
-    const positions = new Float32Array(count * 3);
-    const speeds = new Float32Array(count);
-    const rng = seededRandom(11111);
+    const positions = new Float32Array(count * 3)
+
+    const speeds = new Float32Array(count)
+
+    const rng = seededRandom(11111)
+
     for (let i = 0; i < count; i++) {
-      positions[i * 3] = (rng() - 0.5) * 350;
-      positions[i * 3 + 1] = rng() * 70;
-      positions[i * 3 + 2] = (rng() - 0.5) * 350;
-      speeds[i] = 0.015 + rng() * 0.04;
+      positions[i * 3] = (rng() - 0.5) * 350
+
+      positions[i * 3 + 1] = rng() * 70
+
+      positions[i * 3 + 2] = (rng() - 0.5) * 350
+
+      speeds[i] = 0.015 + rng() * 0.04
     }
-    const g = new THREE.BufferGeometry();
-    g.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-    return { geom: g, speeds };
-  }, []);
+
+    const g = new THREE.BufferGeometry()
+
+    g.setAttribute("position", new THREE.BufferAttribute(positions, 3))
+
+    return { geom: g, speeds }
+  }, [])
 
   useFrame(() => {
-    const pos = geom.attributes.position.array as Float32Array;
+    const pos = geom.attributes.position.array as Float32Array
+
     for (let i = 0; i < count; i++) {
-      pos[i * 3 + 1] += speeds[i];
-      if (pos[i * 3 + 1] > 70) pos[i * 3 + 1] = 0;
+      pos[i * 3 + 1] += speeds[i]
+
+      if (pos[i * 3 + 1] > 70) pos[i * 3 + 1] = 0
     }
-    geom.attributes.position.needsUpdate = true;
-  });
+
+    geom.attributes.position.needsUpdate = true
+  })
 
   return (
     <points geometry={geom}>
@@ -115,30 +156,44 @@ function CityParticles() {
         sizeAttenuation
       />
     </points>
-  );
+  )
 }
 
 function WindowPanel({
   x,
+
   y,
+
   intensity,
+
   speed,
+
   idx,
 }: {
-  x: number;
-  y: number;
-  intensity: number;
-  speed: number;
-  idx: number;
+  x: number
+
+  y: number
+
+  intensity: number
+
+  speed: number
+
+  idx: number
 }) {
-  const ref = useRef<THREE.Mesh>(null);
+  const ref = useRef<THREE.Mesh>(null)
+
   useFrame((state) => {
-    if (!ref.current) return;
-    const t = state.clock.elapsedTime;
-    const mat = ref.current.material as THREE.MeshStandardMaterial;
-    const flicker = Math.sin(t * speed + idx * 2.3);
-    mat.emissiveIntensity = flicker > 0.85 ? intensity * 0.2 : intensity;
-  });
+    if (!ref.current) return
+
+    const t = state.clock.elapsedTime
+
+    const mat = ref.current.material as THREE.MeshStandardMaterial
+
+    const flicker = Math.sin(t * speed + idx * 2.3)
+
+    mat.emissiveIntensity = flicker > 0.85 ? intensity * 0.2 : intensity
+  })
+
   return (
     <mesh ref={ref} position={[x, y, 0]}>
       <planeGeometry args={[1.3, 0.85]} />
@@ -150,42 +205,47 @@ function WindowPanel({
         opacity={0.9}
       />
     </mesh>
-  );
+  )
 }
 
 function HQBuilding() {
   const windows = useMemo(() => {
-    const rng = seededRandom(33333);
+    const rng = seededRandom(33333)
+
     const wins: Array<{
-      x: number;
-      y: number;
-      intensity: number;
-      speed: number;
-    }> = [];
+      x: number
+
+      y: number
+
+      intensity: number
+
+      speed: number
+    }> = []
+
     for (let floor = 0; floor < 20; floor++) {
       for (let col = 0; col < 3; col++) {
         if (rng() > 0.28) {
           wins.push({
             x: (col - 1) * 2.1,
+
             y: 5.5 + floor * 1.95,
+
             intensity: 0.45 + rng() * 0.75,
+
             speed: 0.4 + rng() * 2.5,
-          });
+          })
         }
       }
     }
-    return wins;
-  }, []);
+
+    return wins
+  }, [])
 
   return (
     <group>
       {/* Approach ring lights on ground */}
       {[10, 18, 28].map((r, i) => (
-        <mesh
-          key={i}
-          position={[0, 0.02, 0]}
-          rotation={[-Math.PI / 2, 0, 0]}
-        >
+        <mesh key={i} position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <ringGeometry args={[r - 0.15, r, 80]} />
           <meshStandardMaterial
             color="#00d4ff"
@@ -263,23 +323,26 @@ function HQBuilding() {
       </mesh>
 
       {/* Tower vertical glowing edges */}
-      {(
-        [
-          [-4.55, -4.05],
-          [-4.55, 4.05],
-          [4.55, -4.05],
-          [4.55, 4.05],
-        ] as [number, number][]
-      ).map(([x, z], i) => (
-        <mesh key={i} position={[x, 23, z]}>
-          <boxGeometry args={[0.14, 42, 0.14]} />
-          <meshStandardMaterial
-            color="#00d4ff"
-            emissive="#00d4ff"
-            emissiveIntensity={3.5}
-          />
-        </mesh>
-      ))}
+      {([
+        [-4.55, -4.05],
+
+        [-4.55, 4.05],
+
+        [4.55, -4.05],
+
+        [4.55, 4.05],
+      ] as [number, number][])
+
+        .map(([x, z], i) => (
+          <mesh key={i} position={[x, 23, z]}>
+            <boxGeometry args={[0.14, 42, 0.14]} />
+            <meshStandardMaterial
+              color="#00d4ff"
+              emissive="#00d4ff"
+              emissiveIntensity={3.5}
+            />
+          </mesh>
+        ))}
 
       {/* Tower horizontal bands */}
       {[8, 16, 26, 36, 42].map((y, i) => (
@@ -345,7 +408,8 @@ function HQBuilding() {
         color="#00d4ff"
         anchorX="center"
         anchorY="middle"
-        letterSpacing={0.35}
+        letterSpacing={0.4}
+        font="/fonts/HYWenHei.woff2"
       >
         FERRIVOX
       </Text>
@@ -357,21 +421,26 @@ function HQBuilding() {
         color="#7a8fa6"
         anchorX="center"
         anchorY="middle"
-        letterSpacing={0.15}
+        letterSpacing={0.2}
       >
         IRON WILL, INFINITE DREAMS
       </Text>
     </group>
-  );
+  )
 }
 
 function BeaconLight() {
-  const ref = useRef<THREE.Mesh>(null);
+  const ref = useRef<THREE.Mesh>(null)
+
   useFrame((state) => {
-    if (!ref.current) return;
-    const mat = ref.current.material as THREE.MeshStandardMaterial;
-    mat.emissiveIntensity = Math.max(0, Math.sin(state.clock.elapsedTime * 2.5)) * 5;
-  });
+    if (!ref.current) return
+
+    const mat = ref.current.material as THREE.MeshStandardMaterial
+
+    mat.emissiveIntensity =
+      Math.max(0, Math.sin(state.clock.elapsedTime * 2.5)) * 5
+  })
+
   return (
     <mesh ref={ref} position={[0, 62, 0]}>
       <sphereGeometry args={[0.35, 8, 8]} />
@@ -381,13 +450,13 @@ function BeaconLight() {
         emissiveIntensity={3}
       />
     </mesh>
-  );
+  )
 }
 
 export default function HQScene({
   position,
 }: {
-  position: [number, number, number];
+  position: [number, number, number]
 }) {
   return (
     <group position={position}>
@@ -407,11 +476,7 @@ export default function HQScene({
       {/* Ground */}
       <mesh position={[0, -0.1, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[500, 500]} />
-        <meshStandardMaterial
-          color="#030608"
-          metalness={0.5}
-          roughness={0.7}
-        />
+        <meshStandardMaterial color="#030608" metalness={0.5} roughness={0.7} />
       </mesh>
 
       {/* Grid */}
@@ -460,5 +525,5 @@ export default function HQScene({
         decay={2}
       />
     </group>
-  );
+  )
 }

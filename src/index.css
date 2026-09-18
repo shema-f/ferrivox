@@ -13,9 +13,10 @@
   --color-white: #f8fafc;
   --color-crimson: #ef4444;
   --color-gold: #f59e0b;
-  --font-display: "Inter", sans-serif;
+  --font-display: "HYWenHei", "Inter", sans-serif;
   --font-body: "Inter", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
+  --font-castle: "Castle", serif;
 }
 
 html,
@@ -27,7 +28,7 @@ body,
   padding: 0;
   overflow: hidden;
   background: #0a0e17;
-  font-family: "Inter", sans-serif;
+  font-family: "HYWenHei", "Inter", sans-serif;
   color: #e2e8f0;
 }
 
@@ -62,6 +63,10 @@ body,
   );
   animation: scanline 8s linear infinite;
   pointer-events: none;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 @keyframes pulse-ring {
@@ -148,4 +153,140 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 /* Input placeholders */
 input::placeholder, textarea::placeholder {
   color: rgba(100, 116, 139, 0.6);
+}
+
+/* ── Design-system polish ────────────────────────── */
+
+::selection {
+  background: rgba(59, 130, 246, 0.35);
+  color: #f8fafc;
+}
+
+/* Monospace micro-labels (division indexes, pipeline steps) */
+.font-mono {
+  font-family: "JetBrains Mono", monospace;
+}
+
+/* Display font — Genshin Impact (HYWenHei) */
+.font-display {
+  font-family: "HYWenHei", "Inter", sans-serif;
+}
+
+/* Castle accent font */
+.font-castle {
+  font-family: "Castle", serif;
+}
+
+/* Gentle entrance for overlay panels */
+@keyframes panel-in {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.panel-enter {
+  animation: panel-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Respect users who prefer less motion */
+@media (prefers-reduced-motion: reduce) {
+  .hud-scanlines,
+  .logo-shimmer,
+  .logo-shimmer::after,
+  .panel-enter {
+    animation: none !important;
+  }
+  button, a {
+    transition: none !important;
+  }
+}
+
+/* ── Modern design-system additions ─────────────── */
+
+/* Glass panel — used for content cards and overlays */
+.glass-panel {
+  background: linear-gradient(
+    160deg,
+    rgba(17, 24, 39, 0.82) 0%,
+    rgba(10, 14, 23, 0.9) 100%
+  );
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Gradient headline accent */
+.text-gradient {
+  background: linear-gradient(100deg, #f8fafc 20%, #60a5fa 55%, #38bdf8 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Thin gradient divider */
+.hairline {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(96, 165, 250, 0.4),
+    transparent
+  );
+}
+
+/* Primary button — shared modern style */
+.btn-primary {
+  color: #ffffff;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  box-shadow:
+    0 0 24px rgba(59, 130, 246, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: all 0.2s ease;
+}
+.btn-primary:hover {
+  background: linear-gradient(135deg, #4f8ff7 0%, #2b6ceb 100%);
+  box-shadow:
+    0 0 36px rgba(59, 130, 246, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* Ghost button */
+.btn-ghost {
+  color: #cbd5e1;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(148, 163, 184, 0.05);
+  transition: all 0.2s ease;
+}
+.btn-ghost:hover {
+  color: #f1f5f9;
+  border-color: rgba(96, 165, 250, 0.5);
+  background: rgba(59, 130, 246, 0.1);
+}
+
+/* Scrollable content panels on small screens */
+.scroll-panel {
+  max-height: min(52vh, 420px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59, 130, 246, 0.3) transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-primary:hover {
+    transform: none;
+  }
 }

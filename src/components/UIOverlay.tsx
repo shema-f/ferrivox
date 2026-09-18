@@ -562,13 +562,13 @@ export default function UIOverlay({ sceneId, onNavigate }: UIOverlayProps) {
               style={{
                 color: "rgba(148, 163, 184, 0.55)",
 
-                fontFamily: "Inter, sans-serif",
+                fontFamily: '"Castle", serif',
 
-                fontSize: "7px",
+                fontSize: "8px",
 
-                fontWeight: 500,
+                fontWeight: 400,
 
-                letterSpacing: "0.3em",
+                letterSpacing: "0.25em",
 
                 textTransform: "uppercase",
 
@@ -793,7 +793,7 @@ export default function UIOverlay({ sceneId, onNavigate }: UIOverlayProps) {
                   </div>
                 ))}
               </div>
-              <h1 className="text-4xl md:text-6xl font-bold mb-5 leading-[1.05] tracking-tight">
+              <h1 className="text-4xl md:text-6xl font-bold mb-5 leading-[1.05] tracking-tight" style={{ fontFamily: '"HYWenHei", sans-serif' }}>
                 <span className="text-gradient">We Build What Powers</span>
                 <br />
                 <span className="text-white">Tomorrow.</span>
@@ -822,7 +822,7 @@ export default function UIOverlay({ sceneId, onNavigate }: UIOverlayProps) {
               <div className="scroll-panel flex flex-wrap gap-x-8 gap-y-3 mb-4">
                 {METRICS.map((m) => (
                   <div key={m.label}>
-                    <span className="text-lg md:text-xl font-bold text-white font-mono">
+                    <span className="text-lg md:text-xl font-bold text-white" style={{ fontFamily: '"HYWenHei", sans-serif' }}>
                       {m.value}
                     </span>{" "}
                     <span className="text-xs text-slate-500">{m.label}</span>
@@ -862,7 +862,7 @@ export default function UIOverlay({ sceneId, onNavigate }: UIOverlayProps) {
               >
                 Technology
               </div>
-              <h2 className="text-2xl md:text-4xl font-bold text-white mb-2">
+              <h2 className="text-2xl md:text-4xl font-bold text-white mb-2" style={{ fontFamily: '"HYWenHei", sans-serif' }}>
                 Four engineering divisions. One company.
               </h2>
               <p className="text-sm md:text-base text-slate-400 mb-8 max-w-lg leading-relaxed">
@@ -881,7 +881,7 @@ export default function UIOverlay({ sceneId, onNavigate }: UIOverlayProps) {
                     >
                       {division.index}
                     </div>
-                    <div className="text-sm font-semibold text-white mb-1.5">
+                    <div className="text-sm font-semibold text-white mb-1.5" style={{ fontFamily: '"Castle", serif' }}>
                       {division.name}
                     </div>
                     <div className="text-xs text-slate-500 leading-relaxed mb-3">
@@ -968,7 +968,7 @@ export default function UIOverlay({ sceneId, onNavigate }: UIOverlayProps) {
               >
                 Project District
               </div>
-              <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-2" style={{ fontFamily: '"HYWenHei", sans-serif' }}>
                 The products we build
               </h2>
               <p className="text-sm text-slate-400 mb-6 max-w-lg">
@@ -989,9 +989,9 @@ export default function UIOverlay({ sceneId, onNavigate }: UIOverlayProps) {
                       )}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2">
-                          <span className="font-mono text-sm font-bold text-white">
-                            {p.name}
-                          </span>
+                      <span className="text-sm font-bold text-white" style={{ fontFamily: '"Castle", serif' }}>
+                        {p.name}
+                      </span>
                           <span
                             className="text-[9px] font-mono px-1.5 py-0.5 rounded shrink-0"
                             style={
@@ -1073,7 +1073,7 @@ export default function UIOverlay({ sceneId, onNavigate }: UIOverlayProps) {
               >
                 Company
               </div>
-              <h2 className="text-2xl md:text-4xl font-bold text-white mb-4">
+              <h2 className="text-2xl md:text-4xl font-bold text-white mb-4" style={{ fontFamily: '"HYWenHei", sans-serif' }}>
                 We don't just use technology.
                 <br />
                 We build it.
@@ -1095,7 +1095,7 @@ export default function UIOverlay({ sceneId, onNavigate }: UIOverlayProps) {
                   { label: "Countries Served", value: "12+" },
                 ].map((stat) => (
                   <div key={stat.label}>
-                    <div className="text-2xl font-bold text-white font-mono">
+                    <div className="text-2xl font-bold text-white" style={{ fontFamily: '"HYWenHei", sans-serif' }}>
                       {stat.value}
                     </div>
                     <div className="text-xs text-slate-500 mt-1">
@@ -1146,7 +1146,7 @@ export default function UIOverlay({ sceneId, onNavigate }: UIOverlayProps) {
                 >
                   Engineering Intake
                 </div>
-                <h2 className="text-xl font-bold text-white mb-5">
+                <h2 className="text-xl font-bold text-white mb-5" style={{ fontFamily: '"HYWenHei", sans-serif' }}>
                   Have something difficult to build? Let's build it.
                 </h2>
                 <ContactForm onSubmit={() => {}} />
@@ -1178,7 +1178,7 @@ export default function UIOverlay({ sceneId, onNavigate }: UIOverlayProps) {
         {/* Newsletter row */}
         <div className="max-w-7xl mx-auto px-6 md:px-10 py-3 flex flex-col md:flex-row md:items-center gap-3 md:gap-10 border-b border-white/5">
           <div className="flex-1 min-w-0">
-            <div className="text-xs font-semibold text-slate-200 tracking-wide">
+            <div className="text-xs font-semibold text-slate-200 tracking-wide" style={{ fontFamily: '"Castle", serif' }}>
               Ferrivox Dispatch
             </div>
             <div className="text-[11px] text-slate-500 leading-snug">
@@ -1258,7 +1258,7 @@ export default function UIOverlay({ sceneId, onNavigate }: UIOverlayProps) {
           </div>
 
           {/* Right: Tagline */}
-          <span className="text-xs text-slate-600 hidden md:block">
+          <span className="text-xs text-slate-600 hidden md:block" style={{ fontFamily: '"Castle", serif' }}>
             IRON WILL, INFINITE DREAMS
           </span>
         </div>
