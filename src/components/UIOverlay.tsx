@@ -16,6 +16,19 @@ import FeriivoxLogo from "./FeriivoxLogo"
 
 import IshamiLogo from "./IshamiLogo"
 
+import {
+  DataIcon,
+  AIIcon,
+  SoftwareIcon,
+  SecurityIcon,
+  ProductIcon,
+  ContactIcon,
+  GlobeIcon,
+  HeroDataIcon,
+  HeroAIIcon,
+  HeroSoftwareIcon,
+} from "./CartoonIcons"
+
 import Newsletter from "./Newsletter"
 
 import SceneTransitionBar from "./SceneTransitionBar"
@@ -765,33 +778,51 @@ export default function UIOverlay({ sceneId, onNavigate }: UIOverlayProps) {
           <div className="absolute bottom-20 md:bottom-28 left-0 right-0 px-5 md:px-8 pointer-events-auto">
             <div className="max-w-4xl mx-auto panel-enter">
               {/* DATA → TRANSFORM → INTELLIGENCE pipeline */}
-              <div className="flex items-center gap-2 mb-4">
-                {["DATA", "TRANSFORM", "INTELLIGENCE"].map((step, i) => (
-                  <div key={step} className="flex items-center gap-2">
-                    <span
-                      className="text-[10px] md:text-xs font-mono font-medium px-2.5 py-1 rounded-md"
-                      style={{
-                        color: i === 2 ? "#00ffcc" : "#60a5fa",
-
-                        border: `1px solid ${
-                          i === 2
-                            ? "rgba(0,255,204,0.3)"
-                            : "rgba(59,130,246,0.3)"
-                        }`,
-
-                        background:
-                          i === 2
-                            ? "rgba(0,255,204,0.06)"
-                            : "rgba(59,130,246,0.06)",
-
-                        letterSpacing: "0.15em",
-                      }}
-                    >
-                      {step}
-                    </span>
-                    {i < 2 && <span className="text-slate-600 text-xs">→</span>}
-                  </div>
-                ))}
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center gap-2">
+                  <HeroDataIcon size={28} />
+                  <span
+                    className="text-[10px] md:text-xs font-mono font-medium px-2.5 py-1 rounded-md"
+                    style={{
+                      color: "#60a5fa",
+                      border: "1px solid rgba(59,130,246,0.3)",
+                      background: "rgba(59,130,246,0.06)",
+                      letterSpacing: "0.15em",
+                    }}
+                  >
+                    DATA
+                  </span>
+                </div>
+                <span className="text-slate-600 text-xs">→</span>
+                <div className="flex items-center gap-2">
+                  <HeroSoftwareIcon size={28} />
+                  <span
+                    className="text-[10px] md:text-xs font-mono font-medium px-2.5 py-1 rounded-md"
+                    style={{
+                      color: "#60a5fa",
+                      border: "1px solid rgba(59,130,246,0.3)",
+                      background: "rgba(59,130,246,0.06)",
+                      letterSpacing: "0.15em",
+                    }}
+                  >
+                    TRANSFORM
+                  </span>
+                </div>
+                <span className="text-slate-600 text-xs">→</span>
+                <div className="flex items-center gap-2">
+                  <HeroAIIcon size={28} />
+                  <span
+                    className="text-[10px] md:text-xs font-mono font-medium px-2.5 py-1 rounded-md"
+                    style={{
+                      color: "#00ffcc",
+                      border: "1px solid rgba(0,255,204,0.3)",
+                      background: "rgba(0,255,204,0.06)",
+                      letterSpacing: "0.15em",
+                    }}
+                  >
+                    INTELLIGENCE
+                  </span>
+                </div>
               </div>
               <h1 className="text-4xl md:text-6xl font-bold mb-5 leading-[1.05] tracking-tight" style={{ fontFamily: '"HYWenHei", sans-serif' }}>
                 <span className="text-gradient">We Build What Powers</span>
@@ -869,29 +900,36 @@ export default function UIOverlay({ sceneId, onNavigate }: UIOverlayProps) {
                 We don't just use technology. We build it.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {DIVISIONS.map((division) => (
-                  <button
-                    key={division.id}
-                    onClick={() => onNavigate(division.id)}
-                    className="text-left p-6 rounded-2xl transition-all duration-200 group glass-panel hover:border-blue-500/40"
-                  >
-                    <div
-                      className="font-mono text-xs mb-4"
-                      style={{ color: "#60a5fa" }}
+                {DIVISIONS.map((division) => {
+                  const divisionIcon = division.id === "data" ? DataIcon : division.id === "ai" ? AIIcon : division.id === "software" ? SoftwareIcon : SecurityIcon
+                  const IconComp = divisionIcon
+                  return (
+                    <button
+                      key={division.id}
+                      onClick={() => onNavigate(division.id)}
+                      className="text-left p-6 rounded-2xl transition-all duration-200 group glass-panel hover:border-blue-500/40"
                     >
-                      {division.index}
-                    </div>
-                    <div className="text-sm font-semibold text-white mb-1.5" style={{ fontFamily: '"Castle", serif' }}>
-                      {division.name}
-                    </div>
-                    <div className="text-xs text-slate-500 leading-relaxed mb-3">
-                      {division.tagline}
-                    </div>
-                    <div className="text-[11px] font-mono text-slate-600 group-hover:text-blue-400 transition-colors">
-                      Explore →
-                    </div>
-                  </button>
-                ))}
+                      <div className="mb-3">
+                        <IconComp size={52} />
+                      </div>
+                      <div
+                        className="font-mono text-xs mb-2"
+                        style={{ color: "#60a5fa" }}
+                      >
+                        {division.index}
+                      </div>
+                      <div className="text-sm font-semibold text-white mb-1.5" style={{ fontFamily: '"Castle", serif' }}>
+                        {division.name}
+                      </div>
+                      <div className="text-xs text-slate-500 leading-relaxed mb-3">
+                        {division.tagline}
+                      </div>
+                      <div className="text-[11px] font-mono text-slate-600 group-hover:text-blue-400 transition-colors">
+                        Explore →
+                      </div>
+                    </button>
+                  )
+                })}
               </div>
             </div>
           </div>
@@ -901,7 +939,13 @@ export default function UIOverlay({ sceneId, onNavigate }: UIOverlayProps) {
         {isFloor && (
           <div className="absolute bottom-20 md:bottom-28 left-0 right-0 px-5 md:px-8 pointer-events-auto">
             <div className="max-w-4xl mx-auto flex items-end justify-between gap-8 panel-enter">
-              <div>
+              <div className="flex items-start gap-4">
+                <div className="hidden md:block shrink-0 mt-1">
+                  {sceneId === "data" && <DataIcon size={56} />}
+                  {sceneId === "ai" && <AIIcon size={56} />}
+                  {sceneId === "software" && <SoftwareIcon size={56} />}
+                  {sceneId === "security" && <SecurityIcon size={56} />}
+                </div>
                 <div
                   className="text-xs font-mono uppercase tracking-widest mb-2"
                   style={{ color: "#60a5fa" }}
@@ -938,21 +982,25 @@ export default function UIOverlay({ sceneId, onNavigate }: UIOverlayProps) {
                   ← All divisions
                 </button>
               </div>
-              <div className="hidden md:flex flex-col gap-1.5 items-end">
-                {DIVISIONS.map((d) => (
-                  <button
-                    key={d.id}
-                    onClick={() => onNavigate(d.id)}
-                    className="text-xs font-mono transition-all"
-                    style={{
-                      color:
-                        d.id === sceneId ? "#60a5fa" : "rgba(100,116,139,0.5)",
-                    }}
-                  >
-                    {d.id === sceneId ? "→ " : "  "}
-                    {d.index} {d.name}
-                  </button>
-                ))}
+              <div className="hidden md:flex flex-col gap-2 items-end">
+                {DIVISIONS.map((d) => {
+                  const DivIcon = d.id === "data" ? DataIcon : d.id === "ai" ? AIIcon : d.id === "software" ? SoftwareIcon : SecurityIcon
+                  return (
+                    <button
+                      key={d.id}
+                      onClick={() => onNavigate(d.id)}
+                      className="flex items-center gap-2 text-xs font-mono transition-all"
+                      style={{
+                        color:
+                          d.id === sceneId ? "#60a5fa" : "rgba(100,116,139,0.5)",
+                      }}
+                    >
+                      {d.id === sceneId ? "→ " : "  "}
+                      <DivIcon size={20} />
+                      {d.index} {d.name}
+                    </button>
+                  )
+                })}
               </div>
             </div>
           </div>
@@ -985,6 +1033,21 @@ export default function UIOverlay({ sceneId, onNavigate }: UIOverlayProps) {
                       {p.id === "ishami" && (
                         <div className="shrink-0">
                           <IshamiLogo size={40} />
+                        </div>
+                      )}
+                      {p.id === "genda" && (
+                        <div className="shrink-0">
+                          <GlobeIcon size={40} />
+                        </div>
+                      )}
+                      {p.id === "ikibina" && (
+                        <div className="shrink-0">
+                          <ProductIcon size={40} />
+                        </div>
+                      )}
+                      {p.id === "ifaranga" && (
+                        <div className="shrink-0">
+                          <ContactIcon size={40} />
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
@@ -1073,11 +1136,14 @@ export default function UIOverlay({ sceneId, onNavigate }: UIOverlayProps) {
               >
                 Company
               </div>
-              <h2 className="text-2xl md:text-4xl font-bold text-white mb-4" style={{ fontFamily: '"HYWenHei", sans-serif' }}>
-                We don't just use technology.
-                <br />
-                We build it.
-              </h2>
+              <div className="flex items-center gap-4 mb-4">
+                <GlobeIcon size={56} />
+                <h2 className="text-2xl md:text-4xl font-bold text-white" style={{ fontFamily: '"HYWenHei", sans-serif' }}>
+                  We don't just use technology.
+                  <br />
+                  We build it.
+                </h2>
+              </div>
               <p className="text-sm md:text-base text-slate-400 mb-6 max-w-lg leading-relaxed">
                 Ferrivox is an African technology and engineering company
                 building the data, AI, software, and digital systems that power
