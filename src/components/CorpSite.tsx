@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, lazy, Suspense } from "react"
 
 import {
   DIVISIONS,
@@ -12,6 +12,8 @@ import FeriivoxLogo from "./FeriivoxLogo"
 import IshamiLogo from "./IshamiLogo"
 
 import SiteFooter from "./SiteFooter"
+
+const FeriChatbot = lazy(() => import("./FeriChatbot"))
 
 import {
   DataIcon,
@@ -129,6 +131,8 @@ const NAV = [
   { label: "Products", href: "#products" },
 
   { label: "Company", href: "#company" },
+
+  { label: "Team", href: "#/team" },
 ]
 
 /* ── Contact form ───────────────────────────────────── */
@@ -427,6 +431,8 @@ function ContactSection() {
 
 export default function CorpSite() {
   const [menuOpen, setMenuOpen] = useState(false)
+
+  const [chatOpen, setChatOpen] = useState(false)
 
   const [scrolled, setScrolled] = useState(false)
 
@@ -904,6 +910,54 @@ export default function CorpSite() {
 
       {/* ── FOOTER ── */}
       <SiteFooter />
+
+      {/* ── FLOATING FERRI BUTTON ─────────────────── */}
+      <div className="fixed bottom-6 right-6 z-[100]">
+        <button
+          onClick={() => setChatOpen(!chatOpen)}
+          className="group relative w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+          style={{
+            background: chatOpen
+              ? "rgba(59, 130, 246, 0.9)"
+              : "linear-gradient(135deg, #3b82f6, #2563eb)",
+
+            boxShadow:
+              "0 4px 24px rgba(59, 130, 246, 0.4), 0 0 48px rgba(59, 130, 246, 0.15)",
+          }}
+          title="Chat with FERRI — Ferrivox AI Assistant"
+        >
+          <span
+            className="absolute inset-0 rounded-full"
+            style={{
+              animation: "pulse-ring 2s ease-out infinite",
+              border: "2px solid rgba(59, 130, 246, 0.3)",
+            }}
+          />
+          <svg
+            className="w-6 h-6 text-white relative z-10"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z" />
+            <path d="M18 14h.01" />
+            <path d="M6 14h.01" />
+            <rect x="2" y="13" width="20" height="8" rx="2" />
+            <path d="M12 17v2" />
+            <path d="M9 17h6" />
+          </svg>
+        </button>
+      </div>
+
+      {/* ── FERRI CHATBOT ── */}
+      {chatOpen && (
+        <Suspense fallback={null}>
+          <FeriChatbot onClose={() => setChatOpen(false)} />
+        </Suspense>
+      )}
     </div>
   )
 }

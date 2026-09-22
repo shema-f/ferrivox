@@ -83,6 +83,8 @@ const FOOTER_COLUMNS: Array<{
     links: [
       { label: "About", href: "#company" },
 
+      { label: "Team", href: "#/team" },
+
       { label: "Technology", href: "#divisions" },
 
       { label: "Start a Project", href: "#contact" },

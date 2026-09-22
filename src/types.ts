@@ -350,3 +350,67 @@ export const PROJECTS: Project[] = [
     status: "IN DEVELOPMENT",
   },
 ]
+
+/* ── Team (placeholder data — edit names, roles, and bios here) ── */
+
+export interface TeamMember {
+  name: string
+
+  role: string
+
+  division: string
+
+  bio: string
+
+  initials: string
+}
+
+export const TEAM: TeamMember[] = [
+  {
+    name: "Fiston Shema",
+
+    role: "Founder & Chief Engineer",
+
+    division: "Ferrivox",
+
+    bio: "Founded Ferrivox to prove that world-class engineering can be built from Kigali for the world.",
+
+    initials: "FS",
+  },
+
+  {
+    name: "A. Uwase",
+
+    role: "Data Operations Lead",
+
+    division: "Ferrivox Data",
+
+    bio: "Turns raw, messy data into AI-ready datasets — with quality measured, not assumed.",
+
+    initials: "AU",
+  },
+
+  {
+    name: "E. Niyonkuru",
+
+    role: "Software Engineer",
+
+    division: "Ferrivox Engineering",
+
+    bio: "Builds the platforms and systems our clients run their businesses on.",
+
+    initials: "EN",
+  },
+
+  {
+    name: "K. Mugisha",
+
+    role: "Security Analyst",
+
+    division: "Ferrivox Security",
+
+    bio: "Makes sure security is engineered into every system from day one — not bolted on after.",
+
+    initials: "KM",
+  },
+]
