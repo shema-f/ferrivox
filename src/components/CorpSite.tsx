@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, lazy, Suspense } from "react"
+import { useState, useEffect, useRef } from "react"
 
 import {
   DIVISIONS,
@@ -22,10 +22,6 @@ import {
   ContactIcon,
   GlobeIcon,
 } from "./CartoonIcons"
-
-const TermsOfService = lazy(() => import("./TermsOfService"))
-
-const PrivacyPolicy = lazy(() => import("./PrivacyPolicy"))
 
 /* ── Scroll reveal hook ─────────────────────────────── */
 
@@ -741,7 +737,7 @@ export default function CorpSite() {
                     <div className="flex items-start justify-between gap-4 mb-4">
                       <div className="flex items-center gap-4">
                         <div className="shrink-0 w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
-                          <PIcon size={32} className={p.id === "ishami" ? "" : undefined} />
+                          <PIcon size={32} />
                         </div>
 
                         <div>
