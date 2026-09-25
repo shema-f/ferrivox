@@ -49,104 +49,299 @@ interface ChatLog {
 }
 
 // Simple admin password — change this to something secure
-
 const ADMIN_PASSWORD = "ferrivox-admin-2024"
 
-type Tab = "subscribers" | "contacts" | "chats"
+type Tab = "contacts" | "chats" | "subscribers"
+
+const SUPABASE_SCHEMA_SQL = `-- Ferrivox Database Initialization for Supabase
+-- Copy and run this in Supabase SQL Editor:
+-- https://supabase.com/dashboard/project/ahgupwvnzjjjqibmavrp/sql
+
+-- 1. Create subscribers table
+CREATE TABLE IF NOT EXISTS public.subscribers (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  email TEXT NOT NULL UNIQUE,
+  subscribed_at TIMESTAMPTZ DEFAULT now(),
+  confirmed BOOLEAN DEFAULT true,
+  source TEXT DEFAULT 'website'
+);
+
+ALTER TABLE public.subscribers ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow anonymous inserts" ON public.subscribers
+  FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Allow public reads" ON public.subscribers
+  FOR SELECT USING (true);
+
+CREATE POLICY "Allow public deletes" ON public.subscribers
+  FOR DELETE USING (true);
+
+CREATE INDEX IF NOT EXISTS idx_subscribers_email ON public.subscribers(email);
+
+-- 2. Create contact submissions table
+CREATE TABLE IF NOT EXISTS public.contact_submissions (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  type TEXT NOT NULL,
+  company TEXT NOT NULL,
+  email TEXT NOT NULL,
+  message TEXT,
+  budget TEXT,
+  timeline TEXT,
+  submitted_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE public.contact_submissions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow anonymous contact inserts" ON public.contact_submissions
+  FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Allow public contact reads" ON public.contact_submissions
+  FOR SELECT USING (true);
+
+CREATE POLICY "Allow public contact deletes" ON public.contact_submissions
+  FOR DELETE USING (true);
+
+-- 3. Create email logs table
+CREATE TABLE IF NOT EXISTS public.email_logs (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  to_email TEXT NOT NULL,
+  subject TEXT NOT NULL,
+  status TEXT DEFAULT 'pending',
+  sent_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE public.email_logs ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public email log access" ON public.email_logs
+  FOR ALL USING (true);
+
+-- 4. Create FERRI AI chatbot logs table
+CREATE TABLE IF NOT EXISTS public.chat_logs (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  session_id TEXT NOT NULL,
+  role TEXT NOT NULL CHECK (role IN ('user', 'bot')),
+  message TEXT NOT NULL,
+  confidence TEXT,
+  topic TEXT,
+  lead_data JSONB,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE public.chat_logs ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow anonymous chat inserts" ON public.chat_logs
+  FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Allow public chat reads" ON public.chat_logs
+  FOR SELECT USING (true);
+
+CREATE INDEX IF NOT EXISTS idx_chat_logs_session ON public.chat_logs(session_id);
+CREATE INDEX IF NOT EXISTS idx_chat_logs_created ON public.chat_logs(created_at DESC);`
 
 export default function AdminPage() {
   const [authenticated, setAuthenticated] = useState(false)
-
   const [password, setPassword] = useState("")
-
   const [activeTab, setActiveTab] = useState<Tab>("contacts")
-
   const [loading, setLoading] = useState(false)
-
   const [error, setError] = useState("")
+  const [tablesNeedSetup, setTablesNeedSetup] = useState(false)
+  const [sqlCopied, setSqlCopied] = useState(false)
+  const [syncing, setSyncing] = useState(false)
+  const [syncMessage, setSyncMessage] = useState("")
 
   const [subscribers, setSubscribers] = useState<Subscriber[]>([])
-
   const [contacts, setContacts] = useState<ContactSubmission[]>([])
-
   const [chatLogs, setChatLogs] = useState<ChatLog[]>([])
-
   const [stats, setStats] = useState({
     subscribers: 0,
-
     contacts: 0,
-
     chatSessions: 0,
-
     leads: 0,
   })
 
   const fetchAll = async () => {
-    if (!isSupabaseConfigured()) {
-      setError("Supabase not configured. Add your credentials to .env")
+    setLoading(true)
+    setError("")
+    setSyncMessage("")
 
-      return
+    let dbSubs: Subscriber[] = []
+    let dbContacts: ContactSubmission[] = []
+    let dbChats: ChatLog[] = []
+    let missingTables = false
+
+    if (isSupabaseConfigured()) {
+      try {
+        const [subRes, contactRes, chatRes] = await Promise.all([
+          supabase
+            .from("subscribers")
+            .select("*")
+            .order("subscribed_at", { ascending: false }),
+          supabase
+            .from("contact_submissions")
+            .select("*")
+            .order("submitted_at", { ascending: false }),
+          supabase
+            .from("chat_logs")
+            .select("*")
+            .order("created_at", { ascending: false }),
+        ])
+
+        if (subRes.error) {
+          if (subRes.error.message.includes("schema cache") || subRes.error.code === "PGRST205") {
+            missingTables = true
+          } else {
+            setError(`Subscribers: ${subRes.error.message}`)
+          }
+        } else {
+          dbSubs = subRes.data || []
+        }
+
+        if (contactRes.error) {
+          if (contactRes.error.message.includes("schema cache") || contactRes.error.code === "PGRST205") {
+            missingTables = true
+          } else {
+            setError((e) => (e ? `${e} | Contacts: ${contactRes.error!.message}` : `Contacts: ${contactRes.error!.message}`))
+          }
+        } else {
+          dbContacts = contactRes.data || []
+        }
+
+        if (chatRes.error) {
+          if (chatRes.error.message.includes("schema cache") || chatRes.error.code === "PGRST205") {
+            missingTables = true
+          } else {
+            setError((e) => (e ? `${e} | Chats: ${chatRes.error!.message}` : `Chats: ${chatRes.error!.message}`))
+          }
+        } else {
+          dbChats = chatRes.data || []
+        }
+      } catch (err: unknown) {
+        console.error("Supabase fetch exception", err)
+      }
+    } else {
+      missingTables = true
     }
 
-    setLoading(true)
+    setTablesNeedSetup(missingTables)
 
-    setError("")
-
+    // Load Local Fallback Records so no leads or subscribers are ever lost
     try {
-      const [subRes, contactRes, chatRes] = await Promise.all([
-        supabase
-          .from("subscribers")
-          .select("*")
-          .order("subscribed_at", { ascending: false }),
+      const localConsultations = JSON.parse(localStorage.getItem("ferrivox_consultations") || "[]")
+      const localSubs = JSON.parse(localStorage.getItem("ferrivox_subscribers") || "[]")
+      const localChats = JSON.parse(localStorage.getItem("ferrivox_chat_logs") || "[]")
 
-        supabase
-          .from("contact_submissions")
-          .select("*")
-          .order("submitted_at", { ascending: false }),
+      // Map local consultations to ContactSubmission shape if not already in dbContacts
+      const localContactRows: ContactSubmission[] = localConsultations.map((item: any, idx: number) => ({
+        id: item.referenceId || `local-consult-${idx}`,
+        type: item.consultationArea || "Consultation",
+        company: `${item.company || "Direct Inquiry"} (${item.fullName || "Prospective Client"}) [Local Backup]`,
+        email: item.email,
+        message: `[Ref: ${item.referenceId || "N/A"}] [Phone: ${item.phone || "N/A"}] [NDA: ${item.needsNda ? "YES" : "NO"}]\n\n${item.message || ""}`,
+        budget: item.budget || null,
+        timeline: item.timeline || null,
+        submitted_at: item.submittedAt || new Date().toISOString(),
+      }))
 
-        supabase
-          .from("chat_logs")
-          .select("*")
-          .order("created_at", { ascending: false }),
-      ])
+      // Merge: DB items first, then any unique local items
+      const existingContactEmails = new Set(dbContacts.map((c) => `${c.email}-${c.submitted_at?.slice(0, 10)}`))
+      const extraContacts = localContactRows.filter((c) => !existingContactEmails.has(`${c.email}-${c.submitted_at?.slice(0, 10)}`))
+      const mergedContacts = [...dbContacts, ...extraContacts]
 
-      if (subRes.error) setError(`Subscribers: ${subRes.error.message}`)
-      else setSubscribers(subRes.data || [])
+      // Merge Subscribers
+      const existingSubEmails = new Set(dbSubs.map((s) => s.email.toLowerCase()))
+      const extraSubs: Subscriber[] = localSubs
+        .filter((s: any) => !existingSubEmails.has(s.email.toLowerCase()))
+        .map((s: any, idx: number) => ({
+          id: s.id || `local-sub-${idx}`,
+          email: s.email,
+          subscribed_at: s.subscribed_at || new Date().toISOString(),
+          confirmed: s.confirmed ?? true,
+        }))
+      const mergedSubs = [...dbSubs, ...extraSubs]
 
-      if (contactRes.error)
-        setError((e) => e + ` Contacts: ${contactRes.error!.message}`)
-      else setContacts(contactRes.data || [])
+      // Merge Chats
+      const existingChatIds = new Set(dbChats.map((c) => c.id))
+      const extraChats: ChatLog[] = localChats.filter((c: any) => !existingChatIds.has(c.id))
+      const mergedChats = [...dbChats, ...extraChats]
 
-      if (chatRes.error)
-        setError((e) => e + ` Chats: ${chatRes.error!.message}`)
-      else setChatLogs(chatRes.data || [])
+      setSubscribers(mergedSubs)
+      setContacts(mergedContacts)
+      setChatLogs(mergedChats)
 
-      // Compute stats
-
-      const subs = subRes.data || []
-
-      const cts = contactRes.data || []
-
-      const chats = chatRes.data || []
-
-      const uniqueSessions = new Set(chats.map((c) => c.session_id))
-
-      const leads = chats.filter((c) => c.topic === "lead_qualification")
+      const uniqueSessions = new Set(mergedChats.map((c) => c.session_id))
+      const leads = mergedChats.filter((c) => c.topic === "lead_qualification" || (c.lead_data && Object.keys(c.lead_data).length > 0))
 
       setStats({
-        subscribers: subs.length,
-
-        contacts: cts.length,
-
+        subscribers: mergedSubs.length,
+        contacts: mergedContacts.length,
         chatSessions: uniqueSessions.size,
-
         leads: leads.length,
       })
-    } catch {
-      setError("Failed to fetch data from Supabase")
+    } catch (e) {
+      console.warn("Error parsing local fallback records", e)
+      setSubscribers(dbSubs)
+      setContacts(dbContacts)
+      setChatLogs(dbChats)
     }
 
     setLoading(false)
+  }
+
+  const handleCopySql = () => {
+    navigator.clipboard.writeText(SUPABASE_SCHEMA_SQL)
+    setSqlCopied(true)
+    setTimeout(() => setSqlCopied(false), 3000)
+  }
+
+  const handleSyncToSupabase = async () => {
+    if (!isSupabaseConfigured()) {
+      setSyncMessage("Supabase credentials missing.")
+      return
+    }
+
+    setSyncing(true)
+    setSyncMessage("")
+
+    try {
+      const localConsultations = JSON.parse(localStorage.getItem("ferrivox_consultations") || "[]")
+      const localSubs = JSON.parse(localStorage.getItem("ferrivox_subscribers") || "[]")
+
+      let syncedContacts = 0
+      let syncedSubs = 0
+
+      for (const item of localConsultations) {
+        const { error } = await supabase.from("contact_submissions").insert([
+          {
+            type: item.consultationArea || "Consultation",
+            company: `${item.company || "Direct Inquiry"} (${item.fullName || "Client"})`,
+            email: item.email,
+            message: `[Ref: ${item.referenceId || "N/A"}] [Phone: ${item.phone || "N/A"}]\n\n${item.message || ""}`,
+            budget: item.budget || null,
+            timeline: item.timeline || null,
+            submitted_at: item.submittedAt || new Date().toISOString(),
+          },
+        ])
+        if (!error) syncedContacts++
+      }
+
+      for (const item of localSubs) {
+        const { error } = await supabase.from("subscribers").insert([
+          {
+            email: item.email,
+            subscribed_at: item.subscribed_at || new Date().toISOString(),
+          },
+        ])
+        if (!error || error.code === "23505") syncedSubs++
+      }
+
+      setSyncMessage(`Sync complete! Synced ${syncedContacts} contact inquiries and ${syncedSubs} subscribers to Supabase.`)
+      await fetchAll()
+    } catch (err: any) {
+      setSyncMessage(`Sync error: ${err.message || "Failed to push to Supabase"}`)
+    } finally {
+      setSyncing(false)
+    }
   }
 
   useEffect(() => {
@@ -274,16 +469,76 @@ export default function AdminPage() {
             Contact submissions, AI chat logs, and subscribers
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={handleSyncToSupabase}
+            disabled={syncing}
+            className="px-4 py-2 text-sm font-medium rounded-lg transition-all border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 disabled:opacity-50"
+          >
+            {syncing ? "Syncing..." : "Sync Local Data to Supabase"}
+          </button>
           <button
             onClick={fetchAll}
-            className="px-4 py-2 text-sm rounded-lg transition-all"
-            style={{ color: "#fff", background: "#3b82f6" }}
+            className="px-4 py-2 text-sm font-medium rounded-lg transition-all text-white bg-blue-600 hover:bg-blue-500"
           >
             Refresh
           </button>
         </div>
       </div>
+
+      {/* Sync Message */}
+      {syncMessage && (
+        <div
+          className="mb-6 p-4 rounded-xl text-sm text-emerald-400 flex items-center justify-between"
+          style={{
+            background: "rgba(16, 185, 129, 0.1)",
+            border: "1px solid rgba(16, 185, 129, 0.2)",
+          }}
+        >
+          <span>{syncMessage}</span>
+          <button
+            onClick={() => setSyncMessage("")}
+            className="text-xs text-slate-400 hover:text-white"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+
+      {/* Database Schema Setup Banner if missing tables in Supabase */}
+      {tablesNeedSetup && (
+        <div
+          className="mb-6 p-5 rounded-xl border border-amber-500/30 bg-amber-950/20"
+        >
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2 text-amber-400 font-semibold text-sm">
+                <span>⚠️</span>
+                <span>Action Needed: Initialize Supabase Database Tables</span>
+              </div>
+              <p className="text-xs text-slate-400 mt-1 max-w-2xl">
+                Your Supabase project (<code className="text-amber-300">ahgupwvnzjjjqibmavrp.supabase.co</code>) is active, but the PostgreSQL tables (<code className="text-slate-300">subscribers</code>, <code className="text-slate-300">contact_submissions</code>, <code className="text-slate-300">chat_logs</code>) have not been created yet. Copy the SQL script below and run it in your Supabase SQL Editor.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                onClick={handleCopySql}
+                className="px-3.5 py-2 text-xs font-semibold rounded-lg bg-amber-500 text-black hover:bg-amber-400 transition-colors shadow-sm"
+              >
+                {sqlCopied ? "✓ SQL Copied!" : "📋 Copy SQL Setup Script"}
+              </button>
+              <a
+                href="https://supabase.com/dashboard/project/ahgupwvnzjjjqibmavrp/sql"
+                target="_blank"
+                rel="noreferrer"
+                className="px-3.5 py-2 text-xs font-semibold rounded-lg border border-slate-700 text-slate-300 hover:bg-slate-800 transition-colors inline-flex items-center gap-1"
+              >
+                Open Supabase SQL Editor ↗
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">

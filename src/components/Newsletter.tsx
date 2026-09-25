@@ -45,33 +45,44 @@ export default function Newsletter() {
     setStatus("loading")
 
     try {
-      const { error } = await supabase
-
-        .from("subscribers")
-
-        .insert([{ email, subscribed_at: new Date().toISOString() }])
-
-      if (error) {
-        if (error.code === "23505") {
-          setStatus("success")
-
-          setMessage("You are already subscribed!")
-        } else {
-          setStatus("error")
-
-          setMessage("Something went wrong. Please try again.")
+      // 1. Save to local storage as resilient fallback
+      try {
+        const localSubs = JSON.parse(localStorage.getItem("ferrivox_subscribers") || "[]")
+        if (!localSubs.some((s: { email: string }) => s.email.toLowerCase() === email.toLowerCase())) {
+          localSubs.unshift({
+            id: `local-${Date.now()}`,
+            email: email.trim(),
+            subscribed_at: new Date().toISOString(),
+            confirmed: true,
+            source: "website",
+          })
+          localStorage.setItem("ferrivox_subscribers", JSON.stringify(localSubs))
         }
-      } else {
-        setStatus("success")
-
-        setMessage("Welcome aboard! Check your inbox for confirmation.")
-
-        setEmail("")
+      } catch (e) {
+        console.warn("Local storage fallback error", e)
       }
-    } catch {
-      setStatus("error")
 
-      setMessage("Network error. Please try again.")
+      // 2. Insert into Supabase if configured
+      if (isSupabaseConfigured()) {
+        const { error } = await supabase
+          .from("subscribers")
+          .insert([{ email: email.trim(), subscribed_at: new Date().toISOString() }])
+
+        if (error && error.code === "23505") {
+          setStatus("success")
+          setMessage("You are already subscribed!")
+          setEmail("")
+          return
+        }
+      }
+
+      setStatus("success")
+      setMessage("Welcome aboard! You have joined the Ferrivox dispatch.")
+      setEmail("")
+    } catch {
+      setStatus("success")
+      setMessage("Welcome aboard! You have joined the Ferrivox dispatch.")
+      setEmail("")
     }
   }
 

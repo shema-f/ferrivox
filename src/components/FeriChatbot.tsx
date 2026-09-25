@@ -617,23 +617,40 @@ export default function FeriChatbot({ onClose }: FeriChatbotProps) {
     confidence?: string,
     topic?: string,
   ) => {
+    // 1. Save to local storage as fallback
+    try {
+      const localLogs = JSON.parse(localStorage.getItem("ferrivox_chat_logs") || "[]")
+      localLogs.unshift({
+        id: `local-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        session_id: sessionId.current,
+        role,
+        message,
+        confidence: confidence || null,
+        topic: topic || null,
+        lead_data: null,
+        created_at: new Date().toISOString(),
+      })
+      if (localLogs.length > 200) localLogs.length = 200
+      localStorage.setItem("ferrivox_chat_logs", JSON.stringify(localLogs))
+    } catch {
+      // ignore local storage errors
+    }
+
     if (!isSupabaseConfigured()) return
 
-    supabase.from("chat_logs").insert([
-      {
-        session_id: sessionId.current,
-
-        role,
-
-        message,
-
-        confidence: confidence || null,
-
-        topic: topic || null,
-
-        created_at: new Date().toISOString(),
-      },
-    ])
+    void supabase
+      .from("chat_logs")
+      .insert([
+        {
+          session_id: sessionId.current,
+          role,
+          message,
+          confidence: confidence || null,
+          topic: topic || null,
+          created_at: new Date().toISOString(),
+        },
+      ])
+      .then(null, () => {})
   }
 
   const addBotMessage = (text: string, confidence?: string, topic?: string) => {
@@ -703,25 +720,38 @@ export default function FeriChatbot({ onClose }: FeriChatbotProps) {
                 addBotMessage(brief)
 
                 // Log lead data
+                try {
+                  const localLogs = JSON.parse(localStorage.getItem("ferrivox_chat_logs") || "[]")
+                  localLogs.unshift({
+                    id: `local-lead-${Date.now()}`,
+                    session_id: sessionId.current,
+                    role: "bot",
+                    message: "PROJECT BRIEF SUBMITTED",
+                    confidence: "high",
+                    topic: "lead_qualification",
+                    lead_data: lead,
+                    created_at: new Date().toISOString(),
+                  })
+                  localStorage.setItem("ferrivox_chat_logs", JSON.stringify(localLogs))
+                } catch {
+                  // ignore local storage errors
+                }
 
                 if (isSupabaseConfigured()) {
-                  supabase.from("chat_logs").insert([
-                    {
-                      session_id: sessionId.current,
-
-                      role: "bot",
-
-                      message: "PROJECT BRIEF SUBMITTED",
-
-                      confidence: "high",
-
-                      topic: "lead_qualification",
-
-                      lead_data: lead,
-
-                      created_at: new Date().toISOString(),
-                    },
-                  ])
+                  void supabase
+                    .from("chat_logs")
+                    .insert([
+                      {
+                        session_id: sessionId.current,
+                        role: "bot",
+                        message: "PROJECT BRIEF SUBMITTED",
+                        confidence: "high",
+                        topic: "lead_qualification",
+                        lead_data: lead,
+                        created_at: new Date().toISOString(),
+                      },
+                    ])
+                    .then(null, () => {})
                 }
 
                 setShowHandoff(true)
