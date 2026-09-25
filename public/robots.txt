@@ -1,19 +1,19 @@
 # Ferrivox — Production robots.txt
-# https://ferrivox.com
+# https://ferrivox.vercel.app
 
 User-agent: *
 Allow: /
 
-# Disallow admin and auth routes
+# Disallow admin and internal api routes
 Disallow: /admin
 Disallow: /admin/*
 Disallow: /api/
 Disallow: /.figma/
 
 # Sitemaps
-Sitemap: https://ferrivox.com/sitemap.xml
+Sitemap: https://ferrivox.vercel.app/sitemap.xml
 
-# Allow explicit access for major search bots
+# Allow explicit access for major search engine crawlers
 User-agent: Googlebot
 Allow: /
 

@@ -1,7 +1,7 @@
 {
   "name": "Ferrivox — Engineering Company",
   "short_name": "Ferrivox",
-  "description": "Ferrivox is an engineering company building data, AI, software, and security systems. Engineered in Kigali, delivering worldwide.",
+  "description": "Ferrivox is an engineering company building data, AI, software, and cybersecurity systems. Engineered in Kigali, delivering worldwide.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#050810",
@@ -13,6 +13,23 @@
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
     }
   ],
   "categories": ["technology", "business", "engineering"]
