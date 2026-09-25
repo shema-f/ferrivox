@@ -1,7 +1,7 @@
 {
-  "name": "Ferrivox — Iron Will, Infinite Dreams",
+  "name": "Ferrivox — Engineering Company",
   "short_name": "Ferrivox",
-  "description": "Rwanda-born technology company building data, AI, software, and intelligent systems.",
+  "description": "Ferrivox is an engineering company building data, AI, software, and security systems. Engineered in Kigali, delivering worldwide.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#050810",
@@ -11,8 +11,9 @@
     {
       "src": "/favicon.svg",
       "sizes": "any",
-      "type": "image/svg+xml"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ],
-  "categories": ["technology", "business", "education"]
+  "categories": ["technology", "business", "engineering"]
 }

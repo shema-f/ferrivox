@@ -13,6 +13,7 @@ import {
 } from "../types"
 
 import FeriivoxLogo from "./FeriivoxLogo"
+import { TECH_ITEMS } from "./TechStackCards"
 
 import IshamiLogo from "./IshamiLogo"
 
@@ -564,32 +565,14 @@ export default function UIOverlay({ sceneId, onNavigate }: UIOverlayProps) {
             >
               <FeriivoxLogo
                 className="logo-shimmer"
+                withTagline={true}
                 style={{
-                  height: "52px",
+                  height: "46px",
 
                   width: "auto",
                 }}
               />
             </div>
-            <span
-              style={{
-                color: "rgba(148, 163, 184, 0.55)",
-
-                fontFamily: '"Castle", serif',
-
-                fontSize: "8px",
-
-                fontWeight: 400,
-
-                letterSpacing: "0.25em",
-
-                textTransform: "uppercase",
-
-                marginTop: "-2px",
-              }}
-            >
-              IRON WILL, INFINITE DREAMS
-            </span>
           </button>
 
           {/* Desktop Navigation */}
@@ -861,22 +844,26 @@ export default function UIOverlay({ sceneId, onNavigate }: UIOverlayProps) {
                 ))}
               </div>
               {/* BUILT WITH stack */}
-              <div className="scroll-panel flex flex-wrap items-center gap-2 max-w-2xl">
-                <span className="text-[10px] font-mono text-slate-600 uppercase tracking-widest mr-1">
+              <div className="scroll-panel flex flex-wrap items-center gap-2 max-w-3xl">
+                <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest mr-1">
                   Built with
                 </span>
-                {TECH_STACK.map((t) => (
-                  <span
-                    key={t}
-                    className="text-[10px] font-mono px-2 py-0.5 rounded"
+                {TECH_ITEMS.map((t) => (
+                  <div
+                    key={t.name}
+                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-mono transition-all hover:scale-105 hover:border-blue-400/40"
                     style={{
-                      color: "rgba(148,163,184,0.7)",
-                      border: "1px solid rgba(100,116,139,0.2)",
-                      background: "rgba(100,116,139,0.06)",
+                      color: "#f1f5f9",
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      background: "rgba(15, 23, 42, 0.8)",
+                      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4)",
                     }}
                   >
-                    {t}
-                  </span>
+                    <span className="w-4 h-4 flex items-center justify-center scale-[0.8] shrink-0">
+                      {t.icon}
+                    </span>
+                    <span>{t.name}</span>
+                  </div>
                 ))}
               </div>
             </div>

@@ -12,6 +12,10 @@ import FeriivoxLogo from "./FeriivoxLogo"
 import IshamiLogo from "./IshamiLogo"
 
 import SiteFooter from "./SiteFooter"
+import FAQSection from "./FAQSection"
+import TechStackCards from "./TechStackCards"
+import ContactSection from "./ContactSection"
+import ParticleNetwork from "./ParticleNetwork"
 
 const FeriChatbot = lazy(() => import("./FeriChatbot"))
 
@@ -130,302 +134,12 @@ const NAV = [
 
   { label: "Products", href: "#products" },
 
+  { label: "FAQ", href: "#faq" },
+
   { label: "Company", href: "#company" },
 
   { label: "Team", href: "#/team" },
 ]
-
-/* ── Contact form ───────────────────────────────────── */
-
-interface ContactFormData {
-  type: string
-
-  company: string
-
-  email: string
-
-  budget: string
-
-  timeline: string
-
-  message: string
-}
-
-function chipStyle(active: boolean): React.CSSProperties {
-  return active
-    ? { color: "#ffffff", background: "#3b82f6", border: "1px solid #3b82f6" }
-    : {
-        color: "rgba(203, 213, 225, 0.75)",
-
-        background: "rgba(59,130,246,0.05)",
-
-        border: "1px solid rgba(59,130,246,0.2)",
-      }
-}
-
-const PROJECT_TYPES = ["AI system", "Data project", "Software", "Security", "Other"]
-
-const BUDGET_RANGES = ["< $5k", "$5k – $15k", "$15k – $50k", "$50k+", "Not sure yet"]
-
-const TIMELINES = ["ASAP", "1–3 months", "3–6 months", "Flexible"]
-
-function ContactSection() {
-  const [form, setForm] = useState<ContactFormData>({
-    type: "",
-
-    company: "",
-
-    email: "",
-
-    budget: "",
-
-    timeline: "",
-
-    message: "",
-  })
-
-  const [submitting, setSubmitting] = useState(false)
-
-  const [done, setDone] = useState(false)
-
-  const [error, setError] = useState("")
-
-  const update = (field: keyof ContactFormData, value: string) =>
-    setForm((f) => ({ ...f, [field]: value }))
-
-  const inputStyle: React.CSSProperties = {
-    color: "#e2e8f0",
-
-    background: "rgba(59,130,246,0.05)",
-
-    border: "1px solid rgba(59,130,246,0.2)",
-  }
-
-  const handleSubmit = async () => {
-    if (!form.email || !form.company || submitting) return
-
-    setSubmitting(true)
-
-    setError("")
-
-    try {
-      const { supabase, isSupabaseConfigured } = await import("../lib/supabase")
-
-      if (isSupabaseConfigured()) {
-        const { error: insertError } = await supabase
-          .from("contact_submissions")
-          .insert([
-            {
-              type: form.type,
-
-              company: form.company,
-
-              email: form.email,
-
-              message: form.message,
-
-              budget: form.budget || null,
-
-              timeline: form.timeline || null,
-
-              submitted_at: new Date().toISOString(),
-            },
-          ])
-
-        if (insertError) throw insertError
-      }
-
-      setDone(true)
-    } catch {
-      setError("Something went wrong. Please try again or email hello@ferrivox.com.")
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  return (
-    <div className="grid md:grid-cols-2 gap-10 md:gap-16">
-      {/* Left: pitch */}
-      <div>
-        <div className="text-xs font-mono uppercase tracking-[0.25em] text-blue-400 mb-4">
-          Start a Project
-        </div>
-
-        <h2
-          className="text-3xl md:text-5xl font-bold text-white tracking-tight leading-tight"
-          style={{ fontFamily: '"HYWenHei", sans-serif' }}
-        >
-          Have something difficult to build?
-        </h2>
-
-        <p className="text-slate-400 mt-5 leading-relaxed text-base md:text-lg max-w-md">
-          Tell us what you are building. We reply within 24 hours with an
-          engineering perspective — not a sales pitch.
-        </p>
-
-        <div className="mt-8 flex flex-col gap-3 text-sm text-slate-400">
-          <div className="flex items-center gap-3">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-
-            <span>Response within 24 hours</span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-
-            <span>NDA-friendly, security-first process</span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-
-            <span>hello@ferrivox.com</span>
-          </div>
-          </div>
-      </div>
-
-      {/* Right: form card */}
-      <div className="glass-panel rounded-2xl p-6 md:p-8">
-        {done ? (
-          <div className="flex flex-col items-center gap-4 py-10 text-center">
-            <div className="w-14 h-14 rounded-full bg-emerald-500/20 flex items-center justify-center">
-              <span className="text-2xl">✓</span>
-            </div>
-
-            <div className="text-xl font-semibold text-slate-100">
-              Thank you!
-            </div>
-
-            <p className="text-sm text-slate-400 max-w-sm">
-              We've received your inquiry and will get back to you within 24
-              hours.
-            </p>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-5">
-            {/* Project type chips */}
-            <div className="flex flex-col gap-2">
-              <label className="text-xs font-medium text-slate-400 uppercase tracking-wider">
-                What are you building?
-              </label>
-
-              <div className="flex flex-wrap gap-2">
-                {PROJECT_TYPES.map((t) => (
-                  <button
-                    key={t}
-                    type="button"
-                    onClick={() => update("type", form.type === t ? "" : t)}
-                    className="px-3 py-1.5 text-xs font-medium rounded-full transition-all duration-150"
-                    style={chipStyle(form.type === t)}
-                  >
-                    {t}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Budget + timeline */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <div className="flex flex-col gap-2">
-                <label className="text-xs font-medium text-slate-400 uppercase tracking-wider">
-                  Budget
-                </label>
-
-                <div className="flex flex-wrap gap-2">
-                  {BUDGET_RANGES.map((b) => (
-                    <button
-                      key={b}
-                      type="button"
-                      onClick={() => update("budget", form.budget === b ? "" : b)}
-                      className="px-3 py-1.5 text-xs font-medium rounded-full transition-all duration-150"
-                      style={chipStyle(form.budget === b)}
-                    >
-                      {b}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <label className="text-xs font-medium text-slate-400 uppercase tracking-wider">
-                  Timeline
-                </label>
-
-                <div className="flex flex-wrap gap-2">
-                  {TIMELINES.map((t) => (
-                    <button
-                      key={t}
-                      type="button"
-                      onClick={() => update("timeline", form.timeline === t ? "" : t)}
-                      className="px-3 py-1.5 text-xs font-medium rounded-full transition-all duration-150"
-                      style={chipStyle(form.timeline === t)}
-                    >
-                      {t}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Company + email */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <input
-                type="text"
-                value={form.company}
-                onChange={(e) => update("company", e.target.value)}
-                placeholder="Company name"
-                className="w-full px-3 py-2.5 text-sm rounded-lg outline-none transition-all"
-                style={inputStyle}
-                onFocus={(e) => {
-                  e.target.style.borderColor = "rgba(59,130,246,0.5)"
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = "rgba(59,130,246,0.2)"
-                }}
-              />
-
-              <input
-                type="email"
-                value={form.email}
-                onChange={(e) => update("email", e.target.value)}
-                placeholder="you@company.com"
-                className="w-full px-3 py-2.5 text-sm rounded-lg outline-none transition-all"
-                style={inputStyle}
-                onFocus={(e) => {
-                  e.target.style.borderColor = "rgba(59,130,246,0.5)"
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = "rgba(59,130,246,0.2)"
-                }}
-              />
-            </div>
-
-            {/* Message */}
-            <textarea
-              rows={4}
-              value={form.message}
-              onChange={(e) => update("message", e.target.value)}
-              placeholder="Brief description of your project..."
-              className="w-full px-3 py-2.5 text-sm rounded-lg resize-none outline-none transition-all"
-              style={inputStyle}
-            />
-            {/* Submit */}
-            <button
-              onClick={handleSubmit}
-              disabled={submitting}
-              className="btn-primary px-6 py-3 text-sm font-semibold rounded-xl w-full"
-              style={submitting ? { opacity: 0.6, cursor: "wait" } : undefined}
-            >
-              {submitting ? "Sending..." : "Submit Project →"}
-            </button>
-
-            {error && <div className="text-xs text-red-400">{error}</div>}
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}
 
 /* ── Main page ──────────────────────────────────────── */
 
@@ -452,11 +166,14 @@ export default function CorpSite() {
 
   return (
     <div
-      className="w-full min-h-full"
+      className="w-full min-h-full relative overflow-x-hidden"
       style={{
         background: "linear-gradient(180deg, #050810 0%, #0a0e17 50%, #050810 100%)",
       }}
     >
+      {/* ── BACKGROUND CANVAS PARTICLE NETWORK ── */}
+      <ParticleNetwork />
+
       {/* ── HEADER ── */}
       <header
         className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
@@ -475,8 +192,8 @@ export default function CorpSite() {
         }}
       >
         <div className="max-w-7xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
-          <a href="#top" className="flex items-center gap-3">
-            <FeriivoxLogo className="h-11 w-auto logo-shimmer" />
+          <a href="#top" className="flex items-center gap-3 group focus:outline-none" aria-label="Ferrivox Home">
+            <FeriivoxLogo className="h-9 md:h-11 w-auto logo-shimmer transition-transform duration-200 group-hover:scale-[1.02]" withTagline={true} />
           </a>
 
           <nav className="hidden md:flex items-center gap-1">
@@ -495,7 +212,7 @@ export default function CorpSite() {
               className="btn-primary ml-3 px-5 py-2 text-xs font-semibold rounded-lg"
               style={{ letterSpacing: "0.06em" }}
             >
-              Start a Project
+              Get in Touch
             </a>
           </nav>
 
@@ -556,7 +273,7 @@ export default function CorpSite() {
               onClick={() => setMenuOpen(false)}
               className="btn-primary block w-full text-center px-4 py-3 mt-2 text-sm font-semibold rounded-lg"
             >
-              Start a Project
+              Get in Touch
             </a>
           </div>
         )}
@@ -637,23 +354,8 @@ export default function CorpSite() {
         </div>
       </section>
 
-      {/* ── MARQUEE / STACK BAND ── */}
-      <section className="py-8 border-y border-white/5 bg-white/[0.015]">
-        <div className="max-w-7xl mx-auto px-6 md:px-10 flex flex-wrap items-center gap-x-6 gap-y-3 justify-center">
-          <span className="text-[10px] font-mono text-slate-600 uppercase tracking-[0.25em] mr-2">
-            Built with
-          </span>
-
-          {TECH_STACK.map((t) => (
-            <span
-              key={t}
-              className="text-xs font-mono text-slate-500 hover:text-slate-300 transition-colors"
-            >
-              {t}
-            </span>
-          ))}
-        </div>
-      </section>
+      {/* ── BUILT WITH / TECH STACK CARDS ── */}
+      <TechStackCards />
 
       {/* ── DIVISIONS ── */}
       <section id="divisions" className="py-20 md:py-32 px-6 md:px-10 scroll-mt-16">
@@ -897,6 +599,9 @@ export default function CorpSite() {
           </div>
         </div>
       </section>
+
+      {/* ── FAQ SECTION ── */}
+      <FAQSection />
 
       {/* ── CONTACT ── */}
       <section

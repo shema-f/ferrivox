@@ -33,6 +33,19 @@ export interface CameraState {
   target: [number, number, number]
 }
 
+export interface ContactFormData {
+  fullName?: string
+  email: string
+  company: string
+  phone?: string
+  type?: string
+  consultationArea?: string
+  budget?: string | null
+  timeline?: string | null
+  message: string
+  needsNda?: boolean
+}
+
 export const SCENE_CAMERAS: Record<SceneId, CameraState> = {
   hq: { position: [0, 10, 44], target: [0, 6, 0] },
 

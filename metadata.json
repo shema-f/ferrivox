@@ -1,0 +1,8 @@
+{
+  "name": "Ferrivox — Engineering Company",
+  "description": "Ferrivox is an engineering company building data, AI, software, and security systems for the next generation of technology. Engineered in Kigali — delivering worldwide.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

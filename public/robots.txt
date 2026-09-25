@@ -10,18 +10,21 @@ Disallow: /admin/*
 Disallow: /api/
 Disallow: /.figma/
 
-# Sitemap
+# Sitemaps
 Sitemap: https://ferrivox.com/sitemap.xml
 
-# Crawl-delay for polite bots (optional)
-# Crawl-delay: 1
+# Allow explicit access for major search bots
+User-agent: Googlebot
+Allow: /
 
-# Specific bot rules
-User-agent: GPTBot
+User-agent: Googlebot-Image
 Allow: /
 
 User-agent: Google-Extended
 Allow: /
 
-User-agent: CCBot
-Disallow: /
+User-agent: Bingbot
+Allow: /
+
+User-agent: Applebot
+Allow: /

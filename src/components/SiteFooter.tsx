@@ -87,6 +87,8 @@ const FOOTER_COLUMNS: Array<{
 
       { label: "Technology", href: "#divisions" },
 
+      { label: "Engineering FAQ", href: "#faq" },
+
       { label: "Start a Project", href: "#contact" },
 
       { label: "Careers", href: "mailto:hello@ferrivox.com?subject=Careers" },
@@ -154,15 +156,11 @@ export default function SiteFooter() {
         <div className="grid grid-cols-2 md:grid-cols-6 gap-10">
           {/* Brand column */}
           <div className="col-span-2">
-            <div style={{ height: "48px", width: "auto" }}>
-              <FeriivoxLogo className="h-12 w-auto" />
+            <div className="mb-4">
+              <FeriivoxLogo className="h-12 w-auto" withTagline={true} />
             </div>
 
-            <p className="text-xs mt-4 leading-relaxed" style={{ color: "rgba(148, 163, 184, 0.6)", letterSpacing: "0.2em" }}>
-              IRON WILL, INFINITE DREAMS
-            </p>
-
-            <p className="text-sm text-slate-400 mt-4 leading-relaxed max-w-xs">
+            <p className="text-sm text-slate-400 mt-2 leading-relaxed max-w-xs">
               An engineering company building data, AI, software, and security
               systems. Headquartered in Kigali — delivering worldwide.
             </p>
